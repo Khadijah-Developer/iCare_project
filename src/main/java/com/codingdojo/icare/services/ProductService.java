@@ -47,4 +47,8 @@ public class ProductService {
 	public void delete(Long id) {
 		this.productRepo.deleteById(id);
 	}
+	
+	public List<Product> searchByNameOrBrand(String searchKey){
+		return productRepo.findByNameContainingOrBrandContaining(searchKey, searchKey);
+	}
 }

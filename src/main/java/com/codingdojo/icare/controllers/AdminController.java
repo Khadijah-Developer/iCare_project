@@ -1,17 +1,13 @@
 package com.codingdojo.icare.controllers;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import javax.servlet.jsp.PageContext;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,10 +31,6 @@ import com.codingdojo.icare.requests.FileUploadUtil;
 import com.codingdojo.icare.services.OrderService;
 import com.codingdojo.icare.services.ProductService;
 import com.codingdojo.icare.services.UserService;
-
-
-import javax.imageio.ImageIO;
-import javax.servlet.ServletContext;
 
 
 @Controller
@@ -195,4 +187,7 @@ public class AdminController {
 	    	redirectAttributes.addFlashAttribute("success", "product was updated successfully");
 	        return "redirect:/admin";
 		}
+		
+		
+		
 }

@@ -29,6 +29,8 @@ crossorigin="anonymous">
 			<div class="alert alert-danger mt-4"><c:out value="${error}"/></div>
 		</c:if>
 		
+
+	
 		<div class="d-flex align-items-center justify-content-between">
 			<div class="mt-4">
 				<h1 style="color:#0d6efd">Welcome, <c:out value="${user.fName}"/></h1>
@@ -42,6 +44,10 @@ crossorigin="anonymous">
 			</div>
 			
 		</div>
+		
+	
+  
+		
 		<p>List Products</p>
 		<table class="table">
 			<thead>

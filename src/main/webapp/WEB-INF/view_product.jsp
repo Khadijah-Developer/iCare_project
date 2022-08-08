@@ -31,13 +31,16 @@
 			<img  alt="" src="${path}"/>
 		</c:forEach>
 		
+			<c:if test="${role.equals('admin')}">
+		    
 			<div class="d-flex justify-content-end">
-				<form action='/products/<c:out value="${product.id}"/>/delete' method="post">
+				<form action="/products/${product.id}/delete" method="post">
 											<input type="hidden" name="_method" value="delete">
 											<input type="submit" class="btn btn-dark" value="Delete">
 										</form>
 			<a href='/products/<c:out value="${product.id}"/>/edit'  class="btn btn-dark">Edit</a>
 			</div>
+			</c:if>
 		
     </div>
 	

@@ -11,5 +11,6 @@ import com.codingdojo.icare.models.Product;
 public interface ProductRepo  extends CrudRepository<Product, Long>{
 	
 	List<Product> findAll();
+	
 
 }

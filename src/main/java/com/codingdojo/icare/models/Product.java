@@ -6,9 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
-import javax.persistence.CollectionTable;
 import javax.persistence.Column;
-import javax.persistence.Convert;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -21,10 +19,12 @@ import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.multipart.MultipartFile;
 
 @Entity
 @Table(name = "products")
@@ -36,9 +36,13 @@ public class Product {
 	@NotEmpty
 	private String name;
 	
-
+	// save imgs temporary 
+	@Transient
+	MultipartFile[] ProductImg;
+	
+	// imgs names 
 	@ElementCollection
-    private List<String> ProductImg = new ArrayList<String>();
+	private List<String> photos;
 	
 	@NotEmpty
 	private String description;
@@ -106,28 +110,45 @@ public class Product {
 	}
 
 
-
-
-	public List<String> getProductImg() {
-		return ProductImg;
-	}
-
-
-
-	public void setProductImg(List<String> productImg) {
-		ProductImg = productImg;
-	}
-
-
-
 	public String getDescription() {
 		return description;
 	}
 
 
+	public MultipartFile[] getProductImg() {
+		return ProductImg;
+	}
 
 
 
+	public void setProductImg(MultipartFile[] productImg) {
+		ProductImg = productImg;
+	}
+	
+	
+
+	public List<String> getPhotos() {
+		return photos;
+	}
+
+
+
+	public void setPhotos(List<String> photos) {
+		this.photos = photos;
+	}
+
+
+	// return paths for each img
+	@Transient
+    public List<String> getPhotosImagePath() {
+        if (photos == null || id == null) return null;
+        List<String> paths= new ArrayList<String>();
+        for (String photo : photos) {
+        	paths.add("/photos/" + id + "/" + photo);
+        }
+        return paths;
+    }
+	
 	public void setDescription(String description) {
 		this.description = description;
 	}

@@ -54,7 +54,7 @@ crossorigin="anonymous">
 			<tbody>
 				<c:forEach items="${products}" var="product">
 					<tr>	
-						<td ><u><a style="color:#0d6efd"  href='<c:url value="/products/${product.id}"/>' ><c:out value="${product.name}"/></a></u></td>
+						<td ><u><a style="color:#0d6efd"  href='<c:url value="/product/${product.id}"/>' ><c:out value="${product.name}"/></a></u></td>
 						<td ><c:out value="${product.price}"/></td>
 						<td ><c:out value="${product.countInStock }"/></td>
 					</tr>

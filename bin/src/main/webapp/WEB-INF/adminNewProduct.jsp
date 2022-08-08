@@ -46,7 +46,7 @@ crossorigin="anonymous">
             <div class="d-flex align-items-center justify-content-between">
                     <h1 class="mb-2">Create a New Product</h1>
             </div>
-            <form:form class="border border-3 p-4 border-dark" method="post" enctype="multipart/form-data" modelAttribute="product" action="/product">
+            <form:form class="border border-3 p-4 border-dark" method="post" enctype="multipart/form-data" modelAttribute="product" action="/product/new">
             <div class="mb-3"> 
                 <form:label path="name" class="form-label">Product Name:</form:label>
                 <form:input  path="name" cssClass="form-control" cssErrorClass="form-control is-invalid"  />
@@ -82,25 +82,12 @@ crossorigin="anonymous">
                 <form:errors path="countInStock" cssClass="invalid-feedback"/>
             </div>
             
-            <div id="parentElement" class="mb-3">
-			    
-                <form:label path="ProductImg" class="form-label">Product Images:</form:label>
-                <form:input  path="ProductImg" type="file" cssClass="form-control mb-2" cssErrorClass="form-control is-invalid"  accept="image/png, image/jpeg"/>
+            <div class="mb-3"> 
+                <form:label path="ProductImg" class="form-label">Product Image:</form:label>
+                <form:input  path="ProductImg" type="file" cssClass="form-control" cssErrorClass="form-control is-invalid"  />
                 <form:errors path="ProductImg" cssClass="invalid-feedback"/>
             </div>
-            <!--  added extra img upload fields when user click button add -->
-            <button type="button" id="rowAdder"  class="btn btn-dark" ><span class="fa fa-plus">+</span></button>
-            <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-			<script type="text/javascript">
-		        $("#rowAdder").click(function () {
-		            newRowAdd =  	
-		            '<form:input  path="ProductImg" type="file" cssClass="form-control mb-2" cssErrorClass="form-control is-invalid"  accept="image/png, image/jpeg"/>' +
-		            '<form:errors path="ProductImg" cssClass="invalid-feedback"/>' ;
-		            $('#parentElement').append(newRowAdd);
-		        });
-		    </script>
-                
-                
+            
             <input type="submit" value="Submit" class="btn btn-outline-primary">
         </form:form>
         </div>
@@ -115,8 +102,5 @@ crossorigin="anonymous">
 				
 			</div>
 		</div>
-	
-	
 </body>
-
 </html>

@@ -51,9 +51,7 @@ public class AdminController {
 	@Autowired
 	private OrderService orderService;
 	
-	//needed to upload imgs
-	@Autowired
-	ServletContext servletContext;
+
 	
 	@GetMapping("/admin")
 	public String adminHome(Model model, HttpSession session, RedirectAttributes redirectAttributes) {
@@ -95,21 +93,6 @@ public class AdminController {
 			return "redirect:/product/new";
         } 
 		
-		
-//		String PROFILE_UPLOAD_LOCATION = servletContext.getRealPath("/")
-//				+ "resources" + File.separator
-//				+ "images" + File.separator;
-//
-//		System.out.println("PROFILE_UPLOAD_LOCATION===================");
-//		System.out.println(PROFILE_UPLOAD_LOCATION);
-//
-//		BufferedImage photo = ImageIO.read(new ByteArrayInputStream(product
-//				.getProductImg().getBytes()));
-//		System.out.print(product
-//				.getProductImg());
-//		File destination = new File(PROFILE_UPLOAD_LOCATION
-//				+ product.getId() + "_photo" + ".png");
-//		ImageIO.write(photo, "png", destination);
 		
 		// list to store full paths
 		List<String> pathImgs = new ArrayList<String>();

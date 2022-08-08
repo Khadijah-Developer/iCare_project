@@ -118,6 +118,20 @@ public class CustomerController {
 	  orderService.createOrder((Long) session.getAttribute("user_id"),(List<Product>) session.getAttribute("cart"));
 	  return "redirect:/home";
   }
+	
+	
+@PostMapping(value="/search" )
+public String search( Model model , HttpServletRequest request) {
+	String searchKey = request.getParameter("searchKey");
+	List<Product> searchResult = productService.searchByNameOrBrand(searchKey);
+	
+	model.addAttribute("result",searchResult); 
+	model.addAttribute("searchKey", searchKey);
+	
+	
+    return "search.jsp";
+    }
+}
   
 
 }

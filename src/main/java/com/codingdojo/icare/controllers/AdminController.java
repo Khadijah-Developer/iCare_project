@@ -19,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -153,5 +154,11 @@ public class AdminController {
 		model.addAttribute("product", product);
 		return "/view_product.jsp";
 		}
+	@DeleteMapping("/products/{id}/delete")
+	public String Delete(@PathVariable("id") Long id,RedirectAttributes redirectAttributes) {
+		this.productService.delete(id);
+		redirectAttributes.addFlashAttribute("success", "product was deleted successfully");
+		return "redirect:/admin";
+	}
 
 }

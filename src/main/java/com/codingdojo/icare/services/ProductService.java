@@ -35,5 +35,7 @@ public class ProductService {
 	public Product createProduct(Product product) {
 		return  productRepo.save(product);
 	    }
-
+	public void delete(Long id) {
+		this.productRepo.deleteById(id);
+	}
 }

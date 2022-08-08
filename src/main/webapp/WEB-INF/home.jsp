@@ -38,7 +38,7 @@ crossorigin="anonymous">
 			<div class="mt-4">
 				<h1 style="color:#0d6efd">Welcome <c:out value="${user.fName}"/> </h1>
 				<br>
-				
+				<a href="/new">go new.jsp</a>
 			</div>
 			<div class="d-flex flex-column align-items-end">
 			<a class="btn btn-outline-primary" style="color:#0d6efd" href = "/logout">Logout</a>

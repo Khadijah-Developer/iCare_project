@@ -127,7 +127,7 @@ public class CustomerController {
   }
 	
 	
-@PostMapping(value="/search" )
+@PostMapping("/search" )
 public String search( Model model , HttpServletRequest request) {
 	String searchKey = request.getParameter("searchKey");
 	List<Product> searchResult = productService.searchByNameOrBrand(searchKey);
@@ -139,7 +139,12 @@ public String search( Model model , HttpServletRequest request) {
     return "search.jsp";
     }
 
-@PostMapping(value="/addReview/{id}" )
+@GetMapping("/new")
+public String newE() {
+		return "new.jsp";
+}
+
+@PostMapping("/addReview/{id}" )
 public String addReview(@Valid @ModelAttribute("review") Review review,BindingResult result ,
 		HttpSession session , @PathVariable(value="id") Long product_id ,  HttpServletRequest request) {
 	User customer = userService.findUser((Long) session.getAttribute("user_id"));
@@ -151,6 +156,11 @@ public String addReview(@Valid @ModelAttribute("review") Review review,BindingRe
 	reviewServ.addReview(review);
 	return "redirect:/products/"+product_id;
     }
+
+
+
+
+
 }
   
 

@@ -4,11 +4,11 @@ package com.codingdojo.icare.controllers;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -21,11 +21,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.codingdojo.icare.models.Address;
 import com.codingdojo.icare.models.Order;
 import com.codingdojo.icare.models.Product;
+import com.codingdojo.icare.models.Review;
 import com.codingdojo.icare.models.User;
-import com.codingdojo.icare.repos.UserRepo;
 import com.codingdojo.icare.services.AddressService;
 import com.codingdojo.icare.services.OrderService;
 import com.codingdojo.icare.services.ProductService;
+import com.codingdojo.icare.services.ReviewService;
 import com.codingdojo.icare.services.UserService;
 
 @Controller
@@ -42,10 +43,15 @@ public class CustomerController {
 	
 	@Autowired
 	private AddressService addressService;
+	@Autowired
+	private ReviewService reviewServ;
 	
   @GetMapping("/home")
-  public String userHome(Model model) {
+  public String userHome(Model model , HttpSession session) {
 	model.addAttribute("products",productService.findAllProduct());
+	if (!session.getAttribute("user_id").equals(null)) {
+	model.addAttribute("user",userService.findUser((Long) session.getAttribute("user_id")));
+	}
 		return "home.jsp";
   }
   @GetMapping("/addCart/{id}")
@@ -109,7 +115,8 @@ public class CustomerController {
   }
   //create payment  
   @PostMapping("/cart/payment")
-  public String addpayment(@Valid @ModelAttribute("order") Order order,BindingResult result, RedirectAttributes redirectAttributes, HttpSession session) {
+  public String addpayment(@Valid @ModelAttribute("order") Order order,BindingResult result,
+		  RedirectAttributes redirectAttributes, HttpSession session) {
 	  if(result.hasErrors()) {
 			redirectAttributes.addFlashAttribute("order", order);
 			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.order", result);
@@ -131,7 +138,20 @@ public String search( Model model , HttpServletRequest request) {
 	
     return "search.jsp";
     }
+
+@PostMapping(value="/addReview/{id}" )
+public String addReview(@Valid @ModelAttribute("review") Review review,BindingResult result ,
+		HttpSession session , @PathVariable(value="id") Long product_id ,  HttpServletRequest request) {
+	User customer = userService.findUser((Long) session.getAttribute("user_id"));
+	String rate = request.getParameter("rate");
+	Double rateD = Double.parseDouble(rate);
+	review.setRating(rateD);
+	review.setCustReview(customer);
+	review.setProduct(productService.findProduct(product_id));
+	reviewServ.addReview(review);
+	return "redirect:/products/"+product_id;
+    }
 }
   
 
-}
+

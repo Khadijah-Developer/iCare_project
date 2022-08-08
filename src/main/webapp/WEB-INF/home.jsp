@@ -36,12 +36,12 @@ crossorigin="anonymous">
   
 		<div class="d-flex align-items-center justify-content-between">
 			<div class="mt-4">
-				<h1 style="color:#0d6efd">Welcome </h1>
+				<h1 style="color:#0d6efd">Welcome <c:out value="${user.fName}"/> </h1>
 				<br>
 				
 			</div>
 			<div class="d-flex flex-column align-items-end">
-			<!--	<a class="btn btn-outline-primary" style="color:#0d6efd" href = "/logout">Logout</a>-->
+			<a class="btn btn-outline-primary" style="color:#0d6efd" href = "/logout">Logout</a>
 				<br>
 				
 			</div>

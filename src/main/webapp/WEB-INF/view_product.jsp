@@ -36,9 +36,9 @@
 											<input type="hidden" name="_method" value="delete">
 											<input type="submit" class="btn btn-dark" value="Delete">
 										</form>
+			<a href='/products/<c:out value="${product.id}"/>/edit'  class="btn btn-dark">Edit</a>
 			</div>
 		
-		<a href="/products/<c:out value="${product.id}"/>/tasks">see tasks</a>
     </div>
 	
 </body>

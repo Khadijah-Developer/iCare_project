@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -58,7 +59,7 @@ public class AdminController {
 	
 	@GetMapping("/admin")
 	public String adminHome(Model model, HttpSession session, RedirectAttributes redirectAttributes) {
-		if( !session.getAttribute("role").equals("admin")) {
+		if( !session.getAttribute("role").equals("admin") && session.getAttribute("user_id").equals("null")) {
 			redirectAttributes.addFlashAttribute("error", "Must be authorized first");
 			return "redirect:/";
 		}
@@ -95,23 +96,6 @@ public class AdminController {
 			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.product",result);
 			return "redirect:/product/new";
         } 
-		
-		
-//		String PROFILE_UPLOAD_LOCATION = servletContext.getRealPath("/")
-//				+ "resources" + File.separator
-//				+ "images" + File.separator;
-//
-//		System.out.println("PROFILE_UPLOAD_LOCATION===================");
-//		System.out.println(PROFILE_UPLOAD_LOCATION);
-//
-//		BufferedImage photo = ImageIO.read(new ByteArrayInputStream(product
-//				.getProductImg().getBytes()));
-//		System.out.print(product
-//				.getProductImg());
-//		File destination = new File(PROFILE_UPLOAD_LOCATION
-//				+ product.getId() + "_photo" + ".png");
-//		ImageIO.write(photo, "png", destination);
-		
 		// list to store full paths
 		List<String> pathImgs = new ArrayList<String>();
 
@@ -160,5 +144,55 @@ public class AdminController {
 		redirectAttributes.addFlashAttribute("success", "product was deleted successfully");
 		return "redirect:/admin";
 	}
+	// product edit product form
+		@GetMapping("/products/{id}/edit")
+		public String editProduct(Model model,@PathVariable("id") Long id) {
+			if(!model.containsAttribute("product")) {
+				Product product =productService.findProduct(id);
+				model.addAttribute("product",product);
+			}
+			
+			return"adminEditProduct.jsp";
+		}
+		
+		// update a product
+		@PutMapping(value="/products/{id}")
+		public String update(Model model, @Valid @ModelAttribute("product") Product product, 
+				BindingResult result, 
+				@PathVariable("id") Long id,
+				RedirectAttributes redirectAttributes,
+				HttpSession session
+				) throws IOException {
+			if (result.hasErrors()) {
+				redirectAttributes.addFlashAttribute("product",product);
+				redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.product",result);
+				return "redirect:/admin";
+	        } 
+			// list to store full paths
+			List<String> pathImgs = new ArrayList<String>();
 
+			product = productService.updateProduct(id,product);
+			// loop on the list of imgs
+			for (MultipartFile img: product.getProductImg()) {
+				
+				//store filename
+				String fileName = StringUtils.cleanPath(img.getOriginalFilename());
+				
+				//add filename to list of paths which will be stored in db
+				pathImgs.add(fileName);
+				
+				// create a path 
+				String uploadDir = "photos/" + id;
+				
+				// save the img on the above path
+				FileUploadUtil.saveFile(uploadDir, fileName, img);
+			}
+			
+			// save the paths in db
+			product.setPhotos(pathImgs);
+			product = productService.save(product);
+
+	    	redirectAttributes.addFlashAttribute("success", "product was updated successfully");
+	        return "redirect:/admin";
+		}
 }

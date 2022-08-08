@@ -31,10 +31,20 @@ public class ProductService {
 	public Product addProduct(Product p) {
 		return productRepo.save(p);
 	}
-	
 	public Product createProduct(Product product) {
 		return  productRepo.save(product);
 	    }
+	public Product updateProduct(Long id,Product productUpdate) {
+		Product product = findProduct(id);
+		product.setName(productUpdate.getName());
+		product.setDescription(productUpdate.getDescription());
+		product.setBrand(productUpdate.getBrand());
+		product.setCountInStock(productUpdate.getCountInStock());
+		product.setPrice(productUpdate.getPrice());
+		product.setProductImg(productUpdate.getProductImg());
+		return productRepo.save(product);
+		
+	}
 	public void delete(Long id) {
 		this.productRepo.deleteById(id);
 	}

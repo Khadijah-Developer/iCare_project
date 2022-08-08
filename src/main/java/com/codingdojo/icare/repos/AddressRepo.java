@@ -9,7 +9,7 @@ import com.codingdojo.icare.models.Address;
 
 
 @Repository
-public interface AdderssRepo  extends CrudRepository<Address, Long>{
+public interface AddressRepo  extends CrudRepository<Address, Long>{
 	
 	List<Address> findAll();
 

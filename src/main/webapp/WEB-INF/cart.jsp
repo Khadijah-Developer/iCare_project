@@ -42,29 +42,27 @@ crossorigin="anonymous">
 			</div>
 			
 		</div>
-		<!--<c:forEach items="${cart}" var="item">
-		<c:out value="${item.name}"/>
-		</c:forEach>-->
-		<a class="btn btn-outline-primary" style="color:#0d6efd" href = "/cart">Cart</a>
-		<p>List Products</p>
+		<p>Cart</p>
 		<table class="table">
 			<thead>
 				<tr>
 					<th scope="col">Product Name</th>
 					<th scope="col">Price</th>
-					<th scope="col">Action</th>
+					<th scope="col">Quantity</th>
 				</tr>
 			</thead>
 			<tbody>
-				<c:forEach items="${products}" var="product">
+				<c:forEach items="${cart}" var="product">
 					<tr>	
 						<td ><u><a style="color:#0d6efd"  href='<c:url value="/products/${product.id}"/>' ><c:out value="${product.name}"/></a></u></td>
 						<td ><c:out value="${product.price}"/></td>
-						<td><a class="btn btn-outline-primary" style="color:#0d6efd" href = "/addCart/${product.id}">Add to Cart</a></td>
+						<td></td>
 					</tr>
 				</c:forEach>
 			</tbody>
 		</table>
+		<p>total Price : <c:out value="${totalPrice}"/></p>
+				<a class="btn btn-outline-primary" style="color:#0d6efd" href = "/cart/checkout">Checkout</a>
 		<br>
 					<div class="d-flex flex-column align-items-end">
 			<!-- 	<a class="btn btn-outline-primary" style="color:#0d6efd" href = "/product/new">Add a Product</a>-->

@@ -15,22 +15,20 @@ public class ProductService {
 	@Autowired
 	private ProductRepo productRepo;
 	
-	public Product save(Product product) {
-		return productRepo.save(product);
-	}
-
+	//all Products
 	public List<Product> findAllProduct() {
 		return productRepo.findAll();
 	}
-	
+	//find a Product by ID
 	public Product findProduct(Long id) {
 		Optional<Product> product = productRepo.findById(id); 
 		return product.isPresent()? product.get(): null;
 	}
-	
+	//add a Product
 	public Product addProduct(Product p) {
 		return productRepo.save(p);
 	}
+	//create new Product
 	public Product createProduct(Product product) {
 		return  productRepo.save(product);
 	    }
@@ -45,6 +43,7 @@ public class ProductService {
 		return productRepo.save(product);
 		
 	}
+	//Delete a Product
 	public void delete(Long id) {
 		this.productRepo.deleteById(id);
 	}

@@ -44,9 +44,10 @@ crossorigin="anonymous">
 		
 		        <div>
             <div class="d-flex align-items-center justify-content-between">
-                    <h1 class="mb-2">Create a New Product</h1>
+                    <h1 class="mb-2">Edit a Product</h1>
             </div>
-            <form:form class="border border-3 p-4 border-dark" method="post" enctype="multipart/form-data" modelAttribute="product" action="/product">
+            <form:form class="border border-3 p-4 border-dark" method="put" enctype="multipart/form-data" modelAttribute="product" action="/products/${product.id}">
+         
             <div class="mb-3"> 
                 <form:label path="name" class="form-label">Product Name:</form:label>
                 <form:input  path="name" cssClass="form-control" cssErrorClass="form-control is-invalid"  />

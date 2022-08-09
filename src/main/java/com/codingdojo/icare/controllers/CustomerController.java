@@ -67,6 +67,8 @@ public class CustomerController {
 		if (!(session.getAttribute("cart") == null)) { // if  cart exist
 			List<Product> cart = (List<Product>) session.getAttribute("cart");
 			session.setAttribute("productCount" , cart.size());
+	    }else {
+	    	session.setAttribute("productCount" , 0);
 	    }
 		return "home.jsp";
 	}

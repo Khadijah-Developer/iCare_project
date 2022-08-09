@@ -1,17 +1,12 @@
 package com.codingdojo.icare.controllers;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
-import javax.servlet.jsp.PageContext;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,24 +14,23 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.codingdojo.icare.models.Order;
 import com.codingdojo.icare.models.Product;
+import com.codingdojo.icare.models.Review;
 import com.codingdojo.icare.models.User;
 import com.codingdojo.icare.requests.FileUploadUtil;
 import com.codingdojo.icare.services.OrderService;
 import com.codingdojo.icare.services.ProductService;
 import com.codingdojo.icare.services.UserService;
-
-
-import javax.imageio.ImageIO;
-import javax.servlet.ServletContext;
 
 
 @Controller
@@ -55,7 +49,7 @@ public class AdminController {
 	
 	@GetMapping("/admin")
 	public String adminHome(Model model, HttpSession session, RedirectAttributes redirectAttributes) {
-		if( !session.getAttribute("role").equals("admin")) {
+		if( !session.getAttribute("role").equals("admin") && session.getAttribute("user_id").equals("null")) {
 			redirectAttributes.addFlashAttribute("error", "Must be authorized first");
 			return "redirect:/";
 		}
@@ -92,8 +86,7 @@ public class AdminController {
 			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.product",result);
 			return "redirect:/product/new";
         } 
-		
-		
+
 		// list to store full paths
 		List<String> pathImgs = new ArrayList<String>();
 
@@ -117,7 +110,7 @@ public class AdminController {
 		
 		// save the paths in db
 		product.setPhotos(pathImgs);
-		product = productService.save(product);
+		productService.addProduct(product);
 
     	redirectAttributes.addFlashAttribute("success", "product was created successfully");
         return "redirect:/admin";
@@ -125,16 +118,72 @@ public class AdminController {
 	
 	@GetMapping("products/{id}")
 	public String product(@PathVariable(value="id") Long id, Model model, HttpSession session, 
-			RedirectAttributes redirectAttributes) throws URISyntaxException {
+			RedirectAttributes redirectAttributes , @ModelAttribute("review") Review review) throws URISyntaxException {
 		
 		// if user did not register or logged in 
-		if(session.getAttribute("user_id") == null) {
-			redirectAttributes.addFlashAttribute("error", "you need to login/register first");
-			return "redirect:/";
-		}	
+		if (!(session.getAttribute("user_id") == null)) {
+			model.addAttribute("user",userService.findUser((Long) session.getAttribute("user_id")));
+		}
 		Product product = productService.findProduct(id);
 		model.addAttribute("product", product);
+		
 		return "/view_product.jsp";
 		}
+	@DeleteMapping("/products/{id}/delete")
+	public String Delete(@PathVariable("id") Long id,RedirectAttributes redirectAttributes) {
+		this.productService.delete(id);
+		redirectAttributes.addFlashAttribute("success", "product was deleted successfully");
+		return "redirect:/admin";
+	}
+	// product edit product form
+		@GetMapping("/products/{id}/edit")
+		public String editProduct(Model model,@PathVariable("id") Long id) {
+			if(!model.containsAttribute("product")) {
+				Product product =productService.findProduct(id);
+				model.addAttribute("product",product);
+			}
+			
+			return"adminEditProduct.jsp";
+		}
+		
+		// update a product
+		@PutMapping(value="/products/{id}")
+		public String update(Model model, @Valid @ModelAttribute("product") Product product, 
+				BindingResult result, 
+				@PathVariable("id") Long id,
+				RedirectAttributes redirectAttributes,
+				HttpSession session
+				) throws IOException {
+			if (result.hasErrors()) {
+				redirectAttributes.addFlashAttribute("product",product);
+				redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.product",result);
+				return "redirect:/admin";
+	        } 
+			// list to store full paths
+			List<String> pathImgs = new ArrayList<String>();
 
+			product = productService.updateProduct(id,product);
+			// loop on the list of imgs
+			for (MultipartFile img: product.getProductImg()) {
+				
+				//store filename
+				String fileName = StringUtils.cleanPath(img.getOriginalFilename());
+				
+				//add filename to list of paths which will be stored in db
+				pathImgs.add(fileName);
+				
+				// create a path 
+				String uploadDir = "photos/" + id;
+				
+				// save the img on the above path
+				FileUploadUtil.saveFile(uploadDir, fileName, img);
+			}
+			
+			// save the paths in db
+			product.setPhotos(pathImgs);
+			productService.addProduct(product);
+
+	    	redirectAttributes.addFlashAttribute("success", "product was updated successfully");
+	        return "redirect:/admin";
+		}
 }

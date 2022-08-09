@@ -17,7 +17,7 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" 
 rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" 
 crossorigin="anonymous">
-<title>Admin</title>
+<title>Home</title>
 </head>
 <body>
  	
@@ -31,62 +31,44 @@ crossorigin="anonymous">
 		
 		<div class="d-flex align-items-center justify-content-between">
 			<div class="mt-4">
-				<h1 style="color:#0d6efd">Welcome, <c:out value="${user.fName}"/></h1>
+				<h1 style="color:#0d6efd">Welcome </h1>
 				<br>
 				
 			</div>
 			<div class="d-flex flex-column align-items-end">
-				<a class="btn btn-outline-primary" style="color:#0d6efd" href = "/logout">Logout</a>
+			<!--	<a class="btn btn-outline-primary" style="color:#0d6efd" href = "/logout">Logout</a>-->
 				<br>
 				
 			</div>
 			
 		</div>
-		<p>List Products</p>
+		<p>Cart</p>
 		<table class="table">
 			<thead>
 				<tr>
 					<th scope="col">Product Name</th>
 					<th scope="col">Price</th>
-					<th scope="col" >In Stock</th>
+					<th scope="col">Quantity</th>
 				</tr>
 			</thead>
 			<tbody>
-				<c:forEach items="${products}" var="product">
+				<c:forEach items="${cart}" var="product">
 					<tr>	
 						<td ><u><a style="color:#0d6efd"  href='<c:url value="/products/${product.id}"/>' ><c:out value="${product.name}"/></a></u></td>
 						<td ><c:out value="${product.price}"/></td>
-						<td ><c:out value="${product.countInStock }"/></td>
+						<td></td>
 					</tr>
 				</c:forEach>
 			</tbody>
 		</table>
+		<p>total Price : <c:out value="${totalPrice}"/></p>
+				<a class="btn btn-outline-primary" style="color:#0d6efd" href = "/cart/checkout">Checkout</a>
 		<br>
 					<div class="d-flex flex-column align-items-end">
-				<a class="btn btn-outline-primary" style="color:#0d6efd" href = "/product/new">Add a Product</a>
+			<!-- 	<a class="btn btn-outline-primary" style="color:#0d6efd" href = "/product/new">Add a Product</a>-->
 				<br>
 				
 			</div>
-					<p>List Orders</p>
-		<table class="table">
-			<thead>
-				<tr>
-					<th scope="col">Customer Name</th>
-					<th scope="col">Total</th>
-					<th scope="col" >Order Status</th>
-				</tr>
-			</thead>
-			<tbody>
-				<c:forEach items="${orders}" var="order">
-					<tr>	
-						<td ><a style="color:#0d6efd"  href='<c:url value="/order/${order.id}"/>' ><c:out value="${product.customer.fName}"/></a></td>
-						<td ><c:out value="${order.totalPrice}"/></td>
-						<td ><c:out value="${order.orderStatus }"/></td>
-					</tr>
-				</c:forEach>
-			</tbody>
-		</table>
-		<br>
 					<div class="d-flex flex-column align-items-end">
 			<!-- 	<a class="btn btn-outline-primary" style="color:#0d6efd" href = "/order/new">Add a Order</a> -->
 				<br>

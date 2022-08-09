@@ -35,6 +35,9 @@ public class Order {
 	
 	private String orderStatus = "pending";
 	
+	@ManyToOne
+	@JoinColumn(name="address_id")
+	private Address address;
 	
 	 //  Relationships   \\
 	
@@ -44,7 +47,7 @@ public class Order {
     private User customer;
 	
 	//1:M order contains products 
-    @OneToMany(mappedBy="order" ,fetch=FetchType.LAZY , cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="order" ,fetch=FetchType.LAZY , cascade = CascadeType.MERGE)
     private List<Product> products; 
     
     
@@ -132,6 +135,21 @@ public class Order {
        this.updatedAt = new Date();
    }
 	
-    
+	public String getOrderStatus() {
+		return orderStatus;
+	}
+	
+	public void setOrderStatus(String orderStatus) {
+		this.orderStatus = orderStatus;
+	}
+	
+	public Address getAddress() {
+		return address;
+	}
+	
+	public void setAddress(Address address) {
+		this.address = address;
+	}
+
 
 }

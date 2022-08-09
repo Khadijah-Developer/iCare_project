@@ -50,16 +50,30 @@ public class CustomerController {
 	
 	@GetMapping("/home")
 	public String userHome(Model model , HttpSession session) {
-		model.addAttribute("products",productService.findAllProduct());
-		if (!(session.getAttribute("user_id") == null)) {
+		
+		if (session.getAttribute("searchKey") == null) { // if searchKey null so thats mean the user didnt search so display all products !
+			model.addAttribute("products",productService.findAllProduct());
+			}else {
+				List<Product> searchResult = productService.searchByNameOrBrand((String)session.getAttribute("searchKey"));
+				model.addAttribute("products",searchResult);
+				request.getSession().removeAttribute("searchKey"); // remove searchKey from the session to display all products when user refresh the page ! 
+			}
+		
+		if (!(session.getAttribute("user_id") == null)) { // if the user in the session send user object to home page (to print the name there )
 			model.addAttribute("user",userService.findUser((Long) session.getAttribute("user_id")));
-	}
+	    }
+		
+		
+		if (!(session.getAttribute("cart") == null)) { // if  cart exist
+			List<Product> cart = (List<Product>) session.getAttribute("cart");
+			session.setAttribute("productCount" , cart.size());
+	    }
 		return "home.jsp";
 	}
 	
 	// add to cart from home
 	@GetMapping("/addCart/{id}")
-	public String addToCart(@PathVariable(value="id") Long id,Model model,HttpSession session, RedirectAttributes redirectAttributes) {
+	public String addToCart(@PathVariable(value="id") Long id,HttpSession session) {
 		Product product = productService.findProduct(id);
 		List<Product> cart= productService.addProduct(product,(List<Product>) session.getAttribute("cart"));
 		session.setAttribute("cart", cart);	
@@ -106,7 +120,7 @@ public class CustomerController {
 		}
 		if (session.getAttribute("cart") == null) {
 			session.setAttribute("cart", new ArrayList<Product>());
-		}
+		}else{
 		List<Product> cart = (List<Product>) session.getAttribute("cart");
 		HashMap<Product,Integer> cartMap = new HashMap<Product,Integer>();
 		for (Product product: cart) {
@@ -127,6 +141,7 @@ public class CustomerController {
 		}
 		model.addAttribute("cartMap",cartMap);
 		session.setAttribute("totalPrice", totalPrice);
+		}
 		return "cart.jsp";
 	}
 	
@@ -202,17 +217,17 @@ public class CustomerController {
 //	}
 	
 	
-	@PostMapping("/search" )
-	public String search( Model model , HttpServletRequest request) {
+	 
+       @PostMapping("/search" )
+	public String search( Model model , HttpServletRequest request ,HttpSession session) {
 		String searchKey = request.getParameter("searchKey");
-		List<Product> searchResult = productService.searchByNameOrBrand(searchKey);
+		session.setAttribute("searchKey", searchKey);
 		
-		model.addAttribute("result",searchResult); 
-		model.addAttribute("searchKey", searchKey);
-		
-		
-	    return "search.jsp";
+	    return "redirect:/home";
 	    }
+	
+        
+        
 	
 	
 	@GetMapping("/new")

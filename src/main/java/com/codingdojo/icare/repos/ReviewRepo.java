@@ -12,5 +12,6 @@ import com.codingdojo.icare.models.Review;
 public interface ReviewRepo extends CrudRepository<Review, Long>{
 	
 	List<Review> findAll();
+	
 
 }

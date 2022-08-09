@@ -1,17 +1,12 @@
 package com.codingdojo.icare.controllers;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
-import javax.servlet.jsp.PageContext;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,15 +25,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.codingdojo.icare.models.Order;
 import com.codingdojo.icare.models.Product;
+import com.codingdojo.icare.models.Review;
 import com.codingdojo.icare.models.User;
 import com.codingdojo.icare.requests.FileUploadUtil;
 import com.codingdojo.icare.services.OrderService;
 import com.codingdojo.icare.services.ProductService;
 import com.codingdojo.icare.services.UserService;
-
-
-import javax.imageio.ImageIO;
-import javax.servlet.ServletContext;
 
 
 @Controller
@@ -53,9 +45,7 @@ public class AdminController {
 	@Autowired
 	private OrderService orderService;
 	
-	//needed to upload imgs
-	@Autowired
-	ServletContext servletContext;
+
 	
 	@GetMapping("/admin")
 	public String adminHome(Model model, HttpSession session, RedirectAttributes redirectAttributes) {
@@ -96,6 +86,7 @@ public class AdminController {
 			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.product",result);
 			return "redirect:/product/new";
         } 
+
 		// list to store full paths
 		List<String> pathImgs = new ArrayList<String>();
 
@@ -119,7 +110,7 @@ public class AdminController {
 		
 		// save the paths in db
 		product.setPhotos(pathImgs);
-		product = productService.save(product);
+		productService.addProduct(product);
 
     	redirectAttributes.addFlashAttribute("success", "product was created successfully");
         return "redirect:/admin";
@@ -127,15 +118,15 @@ public class AdminController {
 	
 	@GetMapping("products/{id}")
 	public String product(@PathVariable(value="id") Long id, Model model, HttpSession session, 
-			RedirectAttributes redirectAttributes) throws URISyntaxException {
+			RedirectAttributes redirectAttributes , @ModelAttribute("review") Review review) throws URISyntaxException {
 		
 		// if user did not register or logged in 
-		if(session.getAttribute("user_id") == null) {
-			redirectAttributes.addFlashAttribute("error", "you need to login/register first");
-			return "redirect:/";
-		}	
+		if (!(session.getAttribute("user_id") == null)) {
+			model.addAttribute("user",userService.findUser((Long) session.getAttribute("user_id")));
+		}
 		Product product = productService.findProduct(id);
 		model.addAttribute("product", product);
+		
 		return "/view_product.jsp";
 		}
 	@DeleteMapping("/products/{id}/delete")
@@ -190,7 +181,7 @@ public class AdminController {
 			
 			// save the paths in db
 			product.setPhotos(pathImgs);
-			product = productService.save(product);
+			productService.addProduct(product);
 
 	    	redirectAttributes.addFlashAttribute("success", "product was updated successfully");
 	        return "redirect:/admin";

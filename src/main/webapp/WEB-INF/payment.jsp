@@ -30,17 +30,17 @@ crossorigin="anonymous">
             <div class="d-flex align-items-center justify-content-between">
                     <h1 class="mb-2">Checkout</h1>
             </div>
-                    <form:form class="border border-3 p-4 border-dark" id="form2" method="post" enctype="multipart/form-data" modelAttribute="order" action="/cart/payment">
-                        <div class="mb-3"> 
-                <form:label path="paymentMethod" class="form-label">Payment</form:label>
-                 <form:radiobutton  path="paymentMethod"  cssErrorClass="form-control is-invalid"  value="paypal"/>Paypal
-                
-                 <form:radiobutton  path="paymentMethod"  cssErrorClass="form-control is-invalid"  value="cash"/>Cash
-                <form:errors path="paymentMethod" cssClass="invalid-feedback"/>
-            </div>
-            <input type="submit" id="submit" value="Save Payment" class="btn btn-outline-primary">
-            </form:form>       	
-        </div>
+                <form:form class="border border-3 p-4 border-dark" id="form2" method="post" enctype="multipart/form-data" modelAttribute="order" action="/cart/payment">
+                    <div class="mb-3"> 
+		                <form:label path="paymentMethod" class="form-label">Payment</form:label>
+		                <form:radiobutton  path="paymentMethod"  cssErrorClass="form-control is-invalid"  value="paypal"/>Paypal
+	                
+	                 	<form:radiobutton  path="paymentMethod"  cssErrorClass="form-control is-invalid"  value="cash"/>Cash
+	                	<form:errors path="paymentMethod" cssClass="invalid-feedback"/>
+		            </div>
+		            <input type="submit" id="submit" value="Save Payment" class="btn btn-outline-primary">
+            	</form:form>       	
+        	</div>
 		<!--  the end  of the form -->
 			</div>
 </body>

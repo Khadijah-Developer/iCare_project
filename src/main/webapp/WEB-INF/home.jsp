@@ -228,23 +228,33 @@
 												value="${product.name}" />
 									</a></u></td>
 								<td><c:out value="${product.price}" /></td>
-								<td><a class="btn btn-outline-primary"
+								
+								<c:choose>
+								<c:when test="${product.countInStock == 0}">
+								<td><a class="btn btn-outline-primary disabled"
 									style="color: #0d6efd" href="/addCart/${product.id}">Add to
 										Cart</a></td>
 
-								<td><c:choose>
-										<c:when test="${product.countInStock == 0}">
-											<p style="color: red">out of stock</p>
+								<td><p style="color: red">out of stock</p></td>
+										
 
 										</c:when>
 										<c:when test="${product.countInStock <= 3}">
-											<p style="color: orange">about to end</p>
+										
+										 <td><a class="btn btn-outline-primary"
+									style="color: #0d6efd" href="/addCart/${product.id}">Add to
+										Cart</a></td>
+											<td><p style="color: orange">about to end</p></td>
 
 										</c:when>
 										<c:otherwise>
-											<p style="color: green">available</p>
+										<td><a class="btn btn-outline-primary "
+									style="color: #0d6efd" href="/addCart/${product.id}">Add to
+										Cart</a></td>
+										
+											<td><p style="color: green">available</p></td>
 										</c:otherwise>
-									</c:choose></td>
+									</c:choose>
 							</tr>
 						</c:forEach>
 					</tbody>

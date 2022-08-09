@@ -61,6 +61,7 @@ public class CustomerController {
 	@GetMapping("/addCart/{id}")
 	public String addToCart(@PathVariable(value="id") Long id,Model model,HttpSession session, RedirectAttributes redirectAttributes) {
 		Product product = productService.findProduct(id);
+		
 		List<Product> cart= productService.addProduct(product,(List<Product>) session.getAttribute("cart"));
 		session.setAttribute("cart", cart);	
 	    return "redirect:/home";
@@ -80,19 +81,22 @@ public class CustomerController {
 	@GetMapping("cart/addCart/{id}")
 	public String addAtCart(@PathVariable(value="id") Long id,Model model,HttpSession session, RedirectAttributes redirectAttributes) {
 		Product product = productService.findProduct(id);
+		if(product.getCountInStock()<=0) {
+			redirectAttributes.addFlashAttribute("error", "Stocks are not enough");
+			return "redirect:/cart";
+		}
 		List<Product> cart= productService.addProduct(product,(List<Product>) session.getAttribute("cart"));
 		//session.setAttribute("cart", cart);	
 		return "redirect:/cart";
 	}
 		
-	// romove all items of specifc product  
+	// Remove all items of specific product  
 	@GetMapping("/removeCart/{id}/all")
 	public String removeAtCart(@PathVariable(value="id") Long id,Model model,
 			HttpSession session, RedirectAttributes redirectAttributes) {
 		Product product = productService.findProduct(id);
 		List<Product> cart= productService.removeAllProduct(product,(List<Product>) session.getAttribute("cart"));
-		session.setAttribute("cart", cart);	
-
+		session.setAttribute("cart", cart);
 		return "redirect:/cart";
 	}
 	
@@ -135,14 +139,10 @@ public class CustomerController {
 	// show order before confirm it and choose address and payment
 	@GetMapping("/cart/checkout")
 	public String checkout(Model model,HttpSession session, RedirectAttributes redirectAttributes){
-		  //System.out.print(session.getAttribute("user_id"));
 		  if(session.getAttribute("user_id") == null) {
 			  redirectAttributes.addFlashAttribute("error", "you need to login/register first");
 			  return "redirect:/";
 		  }
-//		  if(!model.containsAttribute("address")) {
-//			  model.addAttribute("address", new Address());
-//		  }
 		  if(!model.containsAttribute("order")) {
 			  model.addAttribute("order", new Order());
 		  }
@@ -165,9 +165,6 @@ public class CustomerController {
 			  model.addAttribute("address", new Address());
 		  }
 	
-//		  if(!model.containsAttribute("user")) {
-//			  model.addAttribute("user", userService.findUser((Long) session.getAttribute("user_id")));
-//		  }
 		  return "create_address.jsp";
 	}
 	
@@ -186,20 +183,7 @@ public class CustomerController {
 		addressService.createAddress(address);
 		return "redirect:/cart/checkout";
 	}
-	
-	//choose payment  
-//	@PostMapping("/user/payment")
-//	public String addpayment(@RequestParam("payment") String payment,BindingResult result,
-//		  RedirectAttributes redirectAttributes, HttpSession session) {
-//		if(result.hasErrors()) {
-//			redirectAttributes.addFlashAttribute("v", payment);
-//			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.payment", result);
-//			return "redirect:/cart/checkout";
-//		}
-//		//session.setAttribute("payment",payment);
-//		orderService.createOrder((Long) session.getAttribute("user_id"),(List<Product>) session.getAttribute("cart"));
-//		return "redirect:/cart/checkout";
-//	}
+
 	
 	
 	@PostMapping("/search" )
@@ -215,10 +199,10 @@ public class CustomerController {
 	    }
 	
 	
-	@GetMapping("/new")
-	public String newE() {
-			return "new.jsp";
-	}
+//	@GetMapping("/new")
+//	public String newE() {
+//			return "new.jsp";
+//	}
 	
 	
 	@PostMapping("/applyDiscount")
@@ -245,13 +229,12 @@ public class CustomerController {
 			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.order", result);
 			return "redirect:/cart/checkout";
 		}
-		System.out.println(order.getPaymentMethod());
-		System.out.println(order.getAddress());
-		System.out.println((List<Product>) session.getAttribute("cart"));
 		order=orderService.createOrder((Long) session.getAttribute("user_id"),
 				(List<Product>) session.getAttribute("cart"),
 				(Double) session.getAttribute("discount"),order);
 		model.addAttribute(order);
+		session.setAttribute("cart",new ArrayList<Product>());
+		session.setAttribute("totalPrice", 0.0);
 		return "redirect:/summary/"+order.getId();
 	}
 	

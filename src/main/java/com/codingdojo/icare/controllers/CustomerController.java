@@ -2,6 +2,7 @@ package com.codingdojo.icare.controllers;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -55,36 +56,81 @@ public class CustomerController {
 	}
 		return "home.jsp";
 	}
+	
+	// add to cart from home
 	@GetMapping("/addCart/{id}")
 	public String addToCart(@PathVariable(value="id") Long id,Model model,HttpSession session, RedirectAttributes redirectAttributes) {
 		Product product = productService.findProduct(id);
-		
-		if( session.getAttribute("cart") == null) {
-			List<Product> cart = new ArrayList<Product>();
-		    cart.add(product);
-		    session.setAttribute("cart", cart);
-		}
-		else {  
-			List<Product> cart = (List<Product>) session.getAttribute("cart");
-			cart.add(product);
-			session.setAttribute("cart", cart);
-		}
-	  return "redirect:/home";
+		List<Product> cart= productService.addProduct(product,(List<Product>) session.getAttribute("cart"));
+		session.setAttribute("cart", cart);	
+	    return "redirect:/home";
 	}
 	
+	// romove from cart at cart 
+	@GetMapping("/removeCart/{id}")
+	public String removeFromCart(@PathVariable(value="id") Long id,Model model,
+			HttpSession session, RedirectAttributes redirectAttributes) {
+		Product product = productService.findProduct(id);
+		List<Product> cart= productService.removeProduct(product,(List<Product>) session.getAttribute("cart"));
+
+		return "redirect:/cart";
+	}
+	
+	// add to cart from cart
+	@GetMapping("cart/addCart/{id}")
+	public String addAtCart(@PathVariable(value="id") Long id,Model model,HttpSession session, RedirectAttributes redirectAttributes) {
+		Product product = productService.findProduct(id);
+		List<Product> cart= productService.addProduct(product,(List<Product>) session.getAttribute("cart"));
+		//session.setAttribute("cart", cart);	
+		return "redirect:/cart";
+	}
+		
+	// romove all items of specifc product  
+	@GetMapping("/removeCart/{id}/all")
+	public String removeAtCart(@PathVariable(value="id") Long id,Model model,
+			HttpSession session, RedirectAttributes redirectAttributes) {
+		Product product = productService.findProduct(id);
+		List<Product> cart= productService.removeAllProduct(product,(List<Product>) session.getAttribute("cart"));
+		session.setAttribute("cart", cart);	
+
+		return "redirect:/cart";
+	}
+	
+	
+	
+	//show cart
 	@GetMapping("/cart")
-	public String Cart(HttpSession session) {
+	public String Cart(HttpSession session,Model model) {
 		if(session.getAttribute("totalPrice") == null) {
 			session.setAttribute("totalPrice", 0.0);
 		}
+		if (session.getAttribute("cart") == null) {
+			session.setAttribute("cart", new ArrayList<Product>());
+		}
 		List<Product> cart = (List<Product>) session.getAttribute("cart");
-		Double totalPrice=0.0;
-			for(Product product :cart) {
-				totalPrice+=product.getPrice();
+		HashMap<Product,Integer> cartMap = new HashMap<Product,Integer>();
+		for (Product product: cart) {
+			boolean flag =false;
+			for (Product p: cartMap.keySet()) {
+				if (p.getName().equals(product.getName())) {
+					flag=true;
+					cartMap.put(p,cartMap.get(p)+1);
+				}
 			}
+			if(flag == false) {
+				cartMap.put(product,1);
+			}
+		}
+		Double totalPrice=0.0;
+		for(Product product :cart) {
+			totalPrice+=product.getPrice();
+		}
+		model.addAttribute("cartMap",cartMap);
 		session.setAttribute("totalPrice", totalPrice);
 		return "cart.jsp";
 	}
+	
+
 	
 	// show order before confirm it and choose address and payment
 	@GetMapping("/cart/checkout")

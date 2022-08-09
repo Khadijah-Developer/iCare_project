@@ -6,6 +6,7 @@
 			<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 				<!-- form:form -->
 				<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+				<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 					<!-- for rendering errors on PUT routes -->
 					<%@ page isErrorPage="true" %>
 						<!DOCTYPE html>
@@ -52,10 +53,47 @@
 													<a class="nav-link" href="#">Top Products</a>
 												</li>
 
-												<li class="nav-item dropdown">
-													<a class="nav-link dropdown-toggle" href="#" role="button"
-														data-bs-toggle="dropdown" aria-expanded="false">
-														Categories
+											<li class="nav-item">
+												<a class="nav-link" href="#">Top Products</a>
+											</li>
+
+											<li class="nav-item dropdown">
+												<a class="nav-link dropdown-toggle" href="#" role="button"
+													data-bs-toggle="dropdown" aria-expanded="false">
+													Categories
+												</a>
+												<ul class="dropdown-menu">
+													<li><a class="dropdown-item" href="/filter" name="">Body Care</a></li>
+													<li><a class="dropdown-item" href="/filter" name="">Hair Care</a></li>
+													<li><a class="dropdown-item" href="/filter" name="Care">Care</a></li>
+													<li>
+														<hr class="dropdown-divider">
+													</li>
+													<li><a class="dropdown-item" href="#">All Products</a></li>
+												</ul>
+											</li>
+											<li class="nav-item">
+												<a class="nav-link" href="#">Contact</a>
+											</li>
+
+										</ul>
+										<form class="d-flex" role="search" action="/search" method="post">
+											<input class="form-control me-2" type="search" placeholder="Search"
+												aria-label="Search" name="searchKey">
+											<button class="btn btn-outline-success" type="submit">Search</button>
+										</form>
+
+										<ul class="navbar-nav  mb-2 mb-lg-0">
+											<c:if test="${!role.equals('admin')}">
+											<li class="nav-item">
+												<div id="ex4">
+													<a href="/cart">
+														<span class="p1 fa-stack fa-2x has-badge" data-count="${productCount}">
+															<!--<i class="p2 fa fa-circle fa-stack-2x"></i>-->
+	
+															<i class="p3 fa fa-shopping-cart fa-stack-1x xfa-inverse"
+																data-count="4b"></i>
+														</span>
 													</a>
 													<ul class="dropdown-menu">
 														<li><a class="dropdown-item" href="#">Body Care</a></li>
@@ -311,8 +349,47 @@
 											<li class="list-inline-item active ">
 												<a href="#" class="active"><i class="fa fa-facebook"></i></a>
 											</li>
+<<<<<<< HEAD
 											<li class="list-inline-item">
 												<a href="#"><i class="fa fa-twitter"></i></a>
+=======
+											</c:if>
+											<li class="nav-item dropdown">
+												<a class="nav-link dropdown-toggle" href="#" role="button"
+													data-bs-toggle="dropdown" aria-expanded="false">
+													<i class="fa fa-user" style="font-size:36px"></i>
+												</a>
+												<ul class="dropdown-menu">
+													<li>
+														<c:if test="${sessionScope.user_id != null}">
+															<a class="dropdown-item" href="/profile">Profile
+																<c:out value="${user.fName}" />
+															</a>
+														</c:if>
+													</li>
+
+													<!-- <li><a class="dropdown-item" href="#">Profile</a></li> -->
+													<li><a class="dropdown-item" href="#">Orders</a></li>
+													<li class=" dropdown-item">
+														<c:choose>
+															<c:when test="${sessionScope.user_id != null}">
+																<div class="mr-2 logout ">
+																	<a href="/logout" class="icon-logout">Logout </a>
+																	<a href="/logout"></a> <i class="fa fa-sign-out"
+																		style="font-size:25px"></i></a>
+																</div>
+															</c:when>
+															<c:otherwise>
+																<div class="mr-2 logout ">
+																	<a href="/" class="icon-logout">LogIn </a>
+																	<a href="/"></a><i class="fa fa-sign-out"
+																		style="font-size:25px"></i></a>
+																</div>
+															</c:otherwise>
+														</c:choose>
+													</li>
+												</ul>
+>>>>>>> 7b6ac62d2f95347a378c0894b57fcca670bf011f
 											</li>
 											<li class="list-inline-item">
 												<a href="mailto:icare@hotmail.com" ><i class="fa fa-envelope" ></i></a>
@@ -326,8 +403,116 @@
 										</div>
 								
 									</div>
+<<<<<<< HEAD
 								</footer>
 						
+=======
+									<button class="carousel-control-prev" type="button"
+										data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+										<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+										<span class="visually-hidden">Previous</span>
+									</button>
+									<button class="carousel-control-next" type="button"
+										data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+										<span class="carousel-control-next-icon" aria-hidden="true"></span>
+										<span class="visually-hidden">Next</span>
+									</button>
+								</div>
+							</div>
+
+							<div class="container w-75 mt-5">
+								<c:if test="${not empty success}">
+									<div class="alert alert-success mt-4">
+										<c:out value="${success}" />
+									</div>
+								</c:if>
+								<c:if test="${not empty error}">
+									<div class="alert alert-danger mt-4">
+										<c:out value="${error}" />
+									</div>
+								</c:if>
+
+								<!-- <form class="form-inline w-50 " action="/search" method="post">
+    <input class="form-control mr-sm-2" type="search" placeholder="Search" name="searchKey"/>
+    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+  </form> -->
+
+								<div class="d-flex align-items-center justify-content-between">
+									<div class="mt-4">
+										<h1 style="color:#0d6efd">Welcome
+											<c:out value="${user.fName}" />
+										</h1>
+										<br>
+										
+									</div>
+					
+								</div>
+
+		
+								<p>List Products</p>
+								
+	<c:choose>
+    <c:when test="${products.size() == 0}">
+        <h3>no products to display !! </h3>
+        <br />
+    </c:when>    
+    <c:otherwise>
+	    <table class="table">
+					<thead>
+						<tr>
+							<th scope="col">Product Name</th>
+							<th scope="col">Price</th>
+							<th scope="col">Action</th>
+							<th scope="col">Availability</th>
+						</tr>
+					</thead>
+					<tbody>
+						<c:forEach items="${products}" var="product">
+							<tr>
+								<td><u><a style="color: #0d6efd"
+										href='<c:url value="/products/${product.id}"/>'> <c:out
+												value="${product.name}" />
+									</a></u></td>
+								<td><c:out value="${product.price}" /></td>
+								
+								<c:choose>
+								<c:when test="${product.countInStock == 0}">
+								<td><a class="btn btn-outline-primary disabled"
+									style="color: #0d6efd" href="/addCart/${product.id}">Add to
+										Cart</a></td>
+
+								<td><p style="color: red">out of stock</p></td>
+										
+
+										</c:when>
+										<c:when test="${product.countInStock <= 3}">
+										
+										 <td><a class="btn btn-outline-primary"
+									style="color: #0d6efd" href="/addCart/${product.id}">Add to
+										Cart</a></td>
+											<td><p style="color: orange">about to end</p></td>
+
+										</c:when>
+										<c:otherwise>
+										<td><a class="btn btn-outline-primary "
+									style="color: #0d6efd" href="/addCart/${product.id}">Add to
+										Cart</a></td>
+										
+											<td><p style="color: green">available</p></td>
+										</c:otherwise>
+									</c:choose>
+							</tr>
+						</c:forEach>
+					</tbody>
+				</table>
+								<br>
+								
+							</div>
+				</c:otherwise>
+</c:choose>			
+							
+
+>>>>>>> 7b6ac62d2f95347a378c0894b57fcca670bf011f
 							<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
 								integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
 								crossorigin="anonymous"></script>

@@ -1,5 +1,6 @@
 package com.codingdojo.icare.services;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,20 +20,20 @@ public class ProductService {
 		return productRepo.save(product);
 	}
 	
-	//all Products
+	//        all Products        \\
 	public List<Product> findAllProduct() {
 		return productRepo.findAll();
 	}
-	//find a Product by ID
+	//     find a Product by ID     \\
 	public Product findProduct(Long id) {
 		Optional<Product> product = productRepo.findById(id); 
 		return product.isPresent()? product.get(): null;
 	}
-	//add a Product
+	//     add a Product      \\
 	public Product addProduct(Product p) {
 		return productRepo.save(p);
 	}
-	//create new Product
+	//    create new Product     \\
 	public Product createProduct(Product product) {
 		return  productRepo.save(product);
 	    }
@@ -47,12 +48,63 @@ public class ProductService {
 		return productRepo.save(product);
 		
 	}
-	//Delete a Product
+	//    Delete a Product   \\
 	public void delete(Long id) {
 		this.productRepo.deleteById(id);
 	}
 	
 	public List<Product> searchByNameOrBrand(String searchKey){
 		return productRepo.findByNameContainingOrBrandContaining(searchKey, searchKey);
+	}
+
+
+	//    filter products by category  \\
+	public List<Product>  filterByCategory(String filterCategory){
+		return productRepo.findByCategory(filterCategory);
+	
+	public void reduceQuantity(Product product) {	
+		product.setCountInStock(product.getCountInStock()-1);	
+		productRepo.save(product);
+	}
+	public void addToQuantity(Product product) {	
+		product.setCountInStock(product.getCountInStock()+1);	
+		productRepo.save(product);
+	}
+	
+	public List<Product> addProduct(Product product, List<Product> cart) {
+		List<Product> newCart ;
+		if( cart == null) {
+			newCart = new ArrayList<Product>();
+			newCart.add(product);
+		    reduceQuantity(product);
+		}
+		else {  
+			newCart = cart;
+			newCart.add(product);
+			reduceQuantity(product);
+		}
+		return newCart;
+	}
+	public List<Product> removeProduct(Product product, List<Product> cart)  {
+		for (Product product2 : cart) {
+			if(product2.getId().equals(product.getId())){
+				boolean removed=cart.remove(product2);
+				break;
+			}
+		}
+		addToQuantity(product);
+		return cart;
+	}
+	
+	public List<Product> removeAllProduct(Product product, List<Product> cart)  {
+		List<Product> newCart= new ArrayList<Product>();
+		for (int i=0 ; i<cart.size(); i++) {
+			if(!cart.get(i).getName().equals(product.getName())){
+					newCart.add(cart.get(i));
+					addToQuantity(cart.get(i));	
+			}
+		}
+		return newCart;
+
 	}
 }

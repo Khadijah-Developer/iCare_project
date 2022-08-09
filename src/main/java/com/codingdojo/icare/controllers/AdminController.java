@@ -48,7 +48,7 @@ public class AdminController {
 
 	
 	@GetMapping("/admin")
-	public String adminHome(Model model, HttpSession session, RedirectAttributes redirectAttributes) {
+	public String adminHome(Model model, HttpSession session,@ModelAttribute("order")Order order, RedirectAttributes redirectAttributes) {
 		if( !session.getAttribute("role").equals("admin") && session.getAttribute("user_id").equals("null")) {
 			redirectAttributes.addFlashAttribute("error", "Must be authorized first");
 			return "redirect:/";
@@ -186,4 +186,21 @@ public class AdminController {
 	    	redirectAttributes.addFlashAttribute("success", "product was updated successfully");
 	        return "redirect:/admin";
 		}
+		
+		
+		//   Admin Edit order render the page
+		@GetMapping("order/edit/{id}")
+		public String editOrderDsiplay(@PathVariable(value="id") Long id, @Valid @ModelAttribute("order")Order order ) {
+			return "editOrder.jsp";
+		}
+		
+		//   Admin Edit order 
+		@PutMapping("/order/status/{id}")
+		public String editOrder(@PathVariable(value="id") Long id, @Valid @ModelAttribute("order")Order order,
+				BindingResult result, RedirectAttributes redirectAttributes ) {
+			Order order2 = orderService.updateOrder(id, order);
+			return "redirect:/admin";
+		}
+		
+		
 }

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -195,9 +196,10 @@ public class CustomerController {
 		session.setAttribute("discount",amount);
 		return "redirect:/cart/checkout";
 	}
-	
+	//   Display the summary of order placed by customer  \\
 	@GetMapping("/summary/{id}")
-	public String summary(Model model,@PathVariable("id") Long id) {
+	public String summary(Model model,@PathVariable("id") Long id ) {
+
 		Order order= orderService.findOrder(id);
 		model.addAttribute("order",order);
 		return "summary.jsp";
@@ -221,7 +223,44 @@ public class CustomerController {
 		return "redirect:/summary/"+order.getId();
 	}
 	
+	//   Display customer's profile   \\
+	@GetMapping("/profile")
+	public String customerProfile(Model model, HttpSession session) {
+		
+		
+		//  return id for logined customer 
+		Long userId  = (Long)session.getAttribute("user_id");
+		//  return logined customer info
+		User user = userService.findUser(userId);
+		model.addAttribute("customer", user);
+		
+		//    return  all customer's orders   \\
+		List<Order> orders = orderService.findAllOrder();
+		//     pass all customer's orders     \\
+		model.addAttribute("orders", orders);
+			
+		return "profileCustomer.jsp";
+	}
 	
+	   //      Delete specific order     \\
+	
+	@DeleteMapping("/order/delete/{id}")
+	public String deleteOrder(@PathVariable("id") Long id) {
+		orderService.deleteOrder(id);
+		return "redirect:/profile";
+	}
+
+
+	//     filter products via  category   \\
+	@GetMapping("/filter" )
+	public String filterCategory( Model model , HttpServletRequest request) {
+		String filterKey = request.getParameter("filterKey");
+		List<Product> filterResult = productService.filterByCategory(filterKey);
+		
+		model.addAttribute("filter",filterResult); 
+		model.addAttribute("filterKey", filterKey);
+	    return "redirect:/home";
+	}
 }
   
 

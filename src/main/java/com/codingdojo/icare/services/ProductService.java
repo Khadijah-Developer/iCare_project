@@ -19,20 +19,20 @@ public class ProductService {
 		return productRepo.save(product);
 	}
 	
-	//all Products
+	//        all Products        \\
 	public List<Product> findAllProduct() {
 		return productRepo.findAll();
 	}
-	//find a Product by ID
+	//     find a Product by ID     \\
 	public Product findProduct(Long id) {
 		Optional<Product> product = productRepo.findById(id); 
 		return product.isPresent()? product.get(): null;
 	}
-	//add a Product
+	//     add a Product      \\
 	public Product addProduct(Product p) {
 		return productRepo.save(p);
 	}
-	//create new Product
+	//    create new Product     \\
 	public Product createProduct(Product product) {
 		return  productRepo.save(product);
 	    }
@@ -47,12 +47,17 @@ public class ProductService {
 		return productRepo.save(product);
 		
 	}
-	//Delete a Product
+	//    Delete a Product   \\
 	public void delete(Long id) {
 		this.productRepo.deleteById(id);
 	}
 	
 	public List<Product> searchByNameOrBrand(String searchKey){
 		return productRepo.findByNameContainingOrBrandContaining(searchKey, searchKey);
+	}
+
+	//    filter products by category  \\
+	public List<Product>  filterByCategory(String filterCategory){
+		return productRepo.findByCategory(filterCategory);
 	}
 }

@@ -211,30 +211,44 @@
         <br />
     </c:when>    
     <c:otherwise>
-								<table class="table">
-									<thead>
-										<tr>
-											<th scope="col">Product Name</th>
-											<th scope="col">Price</th>
-											<th scope="col">Action</th>
-										</tr>
-									</thead>
-									<tbody>
-										<c:forEach items="${products}" var="product">
-											<tr>
-												<td><u><a style="color:#0d6efd"
-															href='<c:url value="/products/${product.id}"/>'>
-															<c:out value="${product.name}" />
-														</a></u></td>
-												<td>
-													<c:out value="${product.price}" />
-												</td>
-												<td><a class="btn btn-outline-primary" style="color:#0d6efd"
-														href="/addCart/${product.id}">Add to Cart</a></td>
-											</tr>
-										</c:forEach>
-									</tbody>
-								</table>
+	    <table class="table">
+					<thead>
+						<tr>
+							<th scope="col">Product Name</th>
+							<th scope="col">Price</th>
+							<th scope="col">Action</th>
+							<th scope="col">Availability</th>
+						</tr>
+					</thead>
+					<tbody>
+						<c:forEach items="${products}" var="product">
+							<tr>
+								<td><u><a style="color: #0d6efd"
+										href='<c:url value="/products/${product.id}"/>'> <c:out
+												value="${product.name}" />
+									</a></u></td>
+								<td><c:out value="${product.price}" /></td>
+								<td><a class="btn btn-outline-primary"
+									style="color: #0d6efd" href="/addCart/${product.id}">Add to
+										Cart</a></td>
+
+								<td><c:choose>
+										<c:when test="${product.countInStock == 0}">
+											<p style="color: red">out of stock</p>
+
+										</c:when>
+										<c:when test="${product.countInStock <= 3}">
+											<p style="color: orange">about to end</p>
+
+										</c:when>
+										<c:otherwise>
+											<p style="color: green">available</p>
+										</c:otherwise>
+									</c:choose></td>
+							</tr>
+						</c:forEach>
+					</tbody>
+				</table>
 								<br>
 								
 							</div>

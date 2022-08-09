@@ -6,6 +6,7 @@
 			<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 				<!-- form:form -->
 				<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+				<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 					<!-- for rendering errors on PUT routes -->
 					<%@ page isErrorPage="true" %>
 						<!DOCTYPE html>
@@ -76,7 +77,7 @@
 											<li class="nav-item">
 												<div id="ex4">
 													<a href="/cart">
-														<span class="p1 fa-stack fa-2x has-badge" data-count="5">
+														<span class="p1 fa-stack fa-2x has-badge" data-count="${productCount}">
 															<!--<i class="p2 fa fa-circle fa-stack-2x"></i>-->
 	
 															<i class="p3 fa fa-shopping-cart fa-stack-1x xfa-inverse"
@@ -194,19 +195,20 @@
 											<c:out value="${user.fName}" />
 										</h1>
 										<br>
-										<a href="/new">go new.jsp</a>
+										
 									</div>
-									<!-- <div class="d-flex flex-column align-items-end">
-			<a class="btn btn-outline-primary" style="color:#0d6efd" href = "/logout">Logout</a>
-				<br>			
-			</div> -->
+					
 								</div>
 
-								<!--<c:forEach items="${cart}" var="item">
-		<c:out value="${item.name}"/>
-		</c:forEach>-->
-								<!-- <a class="btn btn-outline-primary" style="color:#0d6efd" href="/cart">Cart</a> -->
+		
 								<p>List Products</p>
+								
+	<c:choose>
+    <c:when test="${products.size() == 0}">
+        <h3>no products to display !! </h3>
+        <br />
+    </c:when>    
+    <c:otherwise>
 								<table class="table">
 									<thead>
 										<tr>
@@ -232,17 +234,11 @@
 									</tbody>
 								</table>
 								<br>
-								<div class="d-flex flex-column align-items-end">
-									<!-- 	<a class="btn btn-outline-primary" style="color:#0d6efd" href = "/product/new">Add a Product</a>-->
-									<br>
-
-								</div>
-								<div class="d-flex flex-column align-items-end">
-									<!-- 	<a class="btn btn-outline-primary" style="color:#0d6efd" href = "/order/new">Add a Order</a> -->
-									<br>
-
-								</div>
+								
 							</div>
+				</c:otherwise>
+</c:choose>			
+							
 
 							<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
 								integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"

@@ -74,6 +74,7 @@
 										</form>
 
 										<ul class="navbar-nav  mb-2 mb-lg-0">
+											<c:if test="${!role.equals('admin')}">
 											<li class="nav-item">
 												<div id="ex4">
 													<a href="/cart">
@@ -86,6 +87,7 @@
 													</a>
 												</div>
 											</li>
+											</c:if>
 											<li class="nav-item dropdown">
 												<a class="nav-link dropdown-toggle" href="#" role="button"
 													data-bs-toggle="dropdown" aria-expanded="false">

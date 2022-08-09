@@ -58,7 +58,11 @@
 		
 		<div class="d-flex align-items-center justify-content-between">
 			<h3  ><c:out value="${product.name}"/></h3> 
-			<a  href="/admin">Back to Dashboard</a>
+			<c:choose>
+				<c:when test="${role.equals('admin')}"><a  href="/admin">Back to Dashboard</a></c:when>
+				<c:otherwise><a  href="/home">Back to Home</a></c:otherwise>
+			</c:choose>
+			
 		</div>
 		<br>
 		<br>
@@ -75,51 +79,47 @@
 		<c:forEach items="${product.photosImagePath}" var="path">
 			<img  alt="" src="${path}"/>
 		</c:forEach>
-		
-			<c:if test="${role.equals('admin')}">
-		    
+		<c:if test="${role.equals('admin')}">
 			<div class="d-flex justify-content-end">
 				<form action="/products/${product.id}/delete" method="post">
-											<input type="hidden" name="_method" value="delete">
-											<input type="submit" class="btn btn-dark" value="Delete">
-										</form>
-			<a href='/products/${product.id}/edit'  class="btn btn-dark">Edit</a>
+					<input type="hidden" name="_method" value="delete">
+					<input type="submit" class="btn btn-dark" value="Delete">
+				</form>
+				<a href='/products/${product.id}/edit'  class="btn btn-dark">Edit</a>
 			</div>
-			</c:if>
+		</c:if>
 			
-			<c:if test="${role.equals('customer')}">
-			
+		<c:if test="${role.equals('customer')}">
 			<c:forEach items="${product.reviews}" var="review">
-			<p>customer's name <c:out value="${review.getCustReview().getfName()}"/></p>
-			 <p>Rating <c:out value="${review.getRating()}"/></p>
+				<p>customer's name <c:out value="${review.getCustReview().getfName()}"/></p>
+				<p>Rating <c:out value="${review.getRating()}"/></p>
 			    <p><c:out value="${review.getComment()}"/></p>
-			     <p><c:out value="${review.getCreatedAt()}"/></p>
+			    <p><c:out value="${review.getCreatedAt()}"/></p>
 			    
 		   </c:forEach>
-			  <form:form action="/addReview/${product.getId()}" method="post" modelAttribute="review">
-		  
- <div class="rate">
-    <input type="radio" id="star5" name="rate" value="5" />
-    <label for="star5" title="text">5 stars</label>
-    <input type="radio" id="star4" name="rate" value="4" />
-    <label for="star4" title="text">4 stars</label>
-    <input type="radio" id="star3" name="rate" value="3" />
-    <label for="star3" title="text">3 stars</label>
-    <input type="radio" id="star2" name="rate" value="2" />
-    <label for="star2" title="text">2 stars</label>
-    <input type="radio" id="star1" name="rate" value="1" />
-    <label for="star1" title="text">1 star</label>
-  </div>
-  <div class="mb-3">
-		    <label for="comment" class="form-label">Add Review</label>
-		    <form:textarea path="comment" cssClass="form-control" cssErrorClass="form-control is-invalid" rows = "5" cols = "30" />
-		    <form:errors path="comment" cssClass="invalid-feedback"/>
-		  </div>
-		  
-		  <button type="submit" class="btn btn-primary">Add</button>
-		</form:form>
+			<form:form action="/addReview/${product.getId()}" method="post" modelAttribute="review">
+				<div class="rate">
+				    <input type="radio" id="star5" name="rate" value="5" />
+				    <label for="star5" title="text">5 stars</label>
+				    <input type="radio" id="star4" name="rate" value="4" />
+				    <label for="star4" title="text">4 stars</label>
+				    <input type="radio" id="star3" name="rate" value="3" />
+				    <label for="star3" title="text">3 stars</label>
+				    <input type="radio" id="star2" name="rate" value="2" />
+				    <label for="star2" title="text">2 stars</label>
+				    <input type="radio" id="star1" name="rate" value="1" />
+				    <label for="star1" title="text">1 star</label>
+				</div>
+				<div class="mb-3">
+			    	<label for="comment" class="form-label">Add Review</label>
+			    	<form:textarea path="comment" cssClass="form-control" cssErrorClass="form-control is-invalid" rows = "5" cols = "30" />
+			    	<form:errors path="comment" cssClass="invalid-feedback"/>
+			    </div>
+			  
+			  	<button type="submit" class="btn btn-primary">Add</button>
+			</form:form>
 			
-			</c:if>
+		</c:if>
 		
     </div>
 	

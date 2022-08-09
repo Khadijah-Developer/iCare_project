@@ -75,12 +75,14 @@
 										<ul class="navbar-nav  mb-2 mb-lg-0">
 											<li class="nav-item">
 												<div id="ex4">
-													<span class="p1 fa-stack fa-2x has-badge" data-count="5">
-														<!--<i class="p2 fa fa-circle fa-stack-2x"></i>-->
-
-														<i class="p3 fa fa-shopping-cart fa-stack-1x xfa-inverse"
-															data-count="4b"></i>
-													</span>
+													<a href="/cart">
+														<span class="p1 fa-stack fa-2x has-badge" data-count="5">
+															<!--<i class="p2 fa fa-circle fa-stack-2x"></i>-->
+	
+															<i class="p3 fa fa-shopping-cart fa-stack-1x xfa-inverse"
+																data-count="4b"></i>
+														</span>
+													</a>
 												</div>
 											</li>
 											<li class="nav-item dropdown">
@@ -203,7 +205,7 @@
 								<!--<c:forEach items="${cart}" var="item">
 		<c:out value="${item.name}"/>
 		</c:forEach>-->
-								<a class="btn btn-outline-primary" style="color:#0d6efd" href="/cart">Cart</a>
+								<!-- <a class="btn btn-outline-primary" style="color:#0d6efd" href="/cart">Cart</a> -->
 								<p>List Products</p>
 								<table class="table">
 									<thead>

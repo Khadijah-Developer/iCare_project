@@ -45,9 +45,7 @@ public class AdminController {
 	@Autowired
 	private OrderService orderService;
 	
-	//needed to upload imgs
-	@Autowired
-	ServletContext servletContext;
+
 	
 	@GetMapping("/admin")
 	public String adminHome(Model model, HttpSession session, RedirectAttributes redirectAttributes) {
@@ -88,6 +86,7 @@ public class AdminController {
 			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.product",result);
 			return "redirect:/product/new";
         } 
+
 		// list to store full paths
 		List<String> pathImgs = new ArrayList<String>();
 
@@ -122,10 +121,9 @@ public class AdminController {
 			RedirectAttributes redirectAttributes , @ModelAttribute("review") Review review) throws URISyntaxException {
 		
 		// if user did not register or logged in 
-		if(session.getAttribute("user_id") == null) {
-			redirectAttributes.addFlashAttribute("error", "you need to login/register first");
-			return "redirect:/";
-		}	
+		if (!(session.getAttribute("user_id") == null)) {
+			model.addAttribute("user",userService.findUser((Long) session.getAttribute("user_id")));
+		}
 		Product product = productService.findProduct(id);
 		model.addAttribute("product", product);
 		

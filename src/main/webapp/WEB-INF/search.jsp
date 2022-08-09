@@ -24,6 +24,7 @@ crossorigin="anonymous">
     </c:when>    
     <c:otherwise>
        
+	
   
 <table class="table">
 			<thead>

@@ -220,19 +220,7 @@ public class CustomerController {
 			return "new.jsp";
 	}
 	
-	@PostMapping("/addReview/{id}" )
-	public String addReview(@Valid @ModelAttribute("review") Review review,BindingResult result ,
-			HttpSession session , @PathVariable(value="id") Long product_id ,  HttpServletRequest request) {
-		User customer = userService.findUser((Long) session.getAttribute("user_id"));
-		String rate = request.getParameter("rate");
-		Double rateD = Double.parseDouble(rate);
-		review.setRating(rateD);
-		review.setCustReview(customer);
-		review.setProduct(productService.findProduct(product_id));
-		reviewServ.addReview(review);
-		return "redirect:/products/"+product_id;
-	    }
-
+	
 	@PostMapping("/applyDiscount")
 	public String applyDiscount(@RequestParam(value="discount") String discount ,	HttpSession session) {
 		// if discount in database apply it 
@@ -265,6 +253,37 @@ public class CustomerController {
 				(Double) session.getAttribute("discount"),order);
 		model.addAttribute(order);
 		return "redirect:/summary/"+order.getId();
+	}
+	
+	
+	@PostMapping("/addReview/{id}" )
+	public String addReview(@Valid @ModelAttribute("review") Review review,BindingResult result ,
+			HttpSession session , @PathVariable(value="id") Long product_id ,  HttpServletRequest request) {
+		User customer = userService.findUser((Long) session.getAttribute("user_id"));
+		String rate = request.getParameter("rate");
+		Double rateD = Double.parseDouble(rate);
+		Product product =productService.findProduct(product_id);
+		review.setRating(rateD);
+		review.setCustReview(customer);
+		review.setProduct(product);
+		reviewServ.addReview(review);
+		product.setAvgRating(getRatAvg(product)); 
+		productService.updateProduct(product_id, product);
+		return "redirect:/products/"+product_id;
+	    }
+
+
+	public Double getRatAvg(Product p) {
+		Double total = 0.0, avrg =0.0;
+		List<Review> reviews = p.getReviews();
+		
+		for (int i=0; i<reviews.size(); i++) {
+			total += reviews.get(i).getRating();	
+		}
+		if (reviews.size() == 0) { /// to prevent divide by zero (total / 0 )
+			return 0.0;
+		}
+		return avrg = total / reviews.size();
 	}
 	
 	

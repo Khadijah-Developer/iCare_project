@@ -17,7 +17,7 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" 
 rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" 
 crossorigin="anonymous">
-<title>Admin</title>
+<title>Home</title>
 </head>
 <body>
  	
@@ -29,26 +29,35 @@ crossorigin="anonymous">
 			<div class="alert alert-danger mt-4"><c:out value="${error}"/></div>
 		</c:if>
 		
+	<form class="form-inline w-50 " action="/search" method="post">
+    <input class="form-control mr-sm-2" type="search" placeholder="Search" name="searchKey"/>
+    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+  </form>
+  
 		<div class="d-flex align-items-center justify-content-between">
 			<div class="mt-4">
-				<h1 style="color:#0d6efd">Welcome, <c:out value="${user.fName}"/></h1>
+				<h1 style="color:#0d6efd">Welcome <c:out value="${user.fName}"/> </h1>
 				<br>
-				
+				<a href="/new">go new.jsp</a>
 			</div>
 			<div class="d-flex flex-column align-items-end">
-				<a class="btn btn-outline-primary" style="color:#0d6efd" href = "/logout">Logout</a>
+			<a class="btn btn-outline-primary" style="color:#0d6efd" href = "/logout">Logout</a>
 				<br>
 				
 			</div>
 			
 		</div>
+		<!--<c:forEach items="${cart}" var="item">
+		<c:out value="${item.name}"/>
+		</c:forEach>-->
+		<a class="btn btn-outline-primary" style="color:#0d6efd" href = "/cart">Cart</a>
 		<p>List Products</p>
 		<table class="table">
 			<thead>
 				<tr>
 					<th scope="col">Product Name</th>
 					<th scope="col">Price</th>
-					<th scope="col" >In Stock</th>
+					<th scope="col">Action</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -56,37 +65,17 @@ crossorigin="anonymous">
 					<tr>	
 						<td ><u><a style="color:#0d6efd"  href='<c:url value="/products/${product.id}"/>' ><c:out value="${product.name}"/></a></u></td>
 						<td ><c:out value="${product.price}"/></td>
-						<td ><c:out value="${product.countInStock }"/></td>
+						<td><a class="btn btn-outline-primary" style="color:#0d6efd" href = "/addCart/${product.id}">Add to Cart</a></td>
 					</tr>
 				</c:forEach>
 			</tbody>
 		</table>
 		<br>
 					<div class="d-flex flex-column align-items-end">
-				<a class="btn btn-outline-primary" style="color:#0d6efd" href = "/product/new">Add a Product</a>
+			<!-- 	<a class="btn btn-outline-primary" style="color:#0d6efd" href = "/product/new">Add a Product</a>-->
 				<br>
 				
 			</div>
-					<p>List Orders</p>
-		<table class="table">
-			<thead>
-				<tr>
-					<th scope="col">Customer Name</th>
-					<th scope="col">Total</th>
-					<th scope="col" >Order Status</th>
-				</tr>
-			</thead>
-			<tbody>
-				<c:forEach items="${orders}" var="order">
-					<tr>	
-						<td ><a style="color:#0d6efd"  href='<c:url value="/order/${order.id}"/>' ><c:out value="${product.customer.fName}"/></a></td>
-						<td ><c:out value="${order.totalPrice}"/></td>
-						<td ><c:out value="${order.orderStatus }"/></td>
-					</tr>
-				</c:forEach>
-			</tbody>
-		</table>
-		<br>
 					<div class="d-flex flex-column align-items-end">
 			<!-- 	<a class="btn btn-outline-primary" style="color:#0d6efd" href = "/order/new">Add a Order</a> -->
 				<br>

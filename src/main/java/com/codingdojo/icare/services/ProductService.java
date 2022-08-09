@@ -16,6 +16,10 @@ public class ProductService {
 	@Autowired
 	private ProductRepo productRepo;
 	
+	public Product save(Product product) {
+		return productRepo.save(product);
+	}
+	
 	//all Products
 	public List<Product> findAllProduct() {
 		return productRepo.findAll();

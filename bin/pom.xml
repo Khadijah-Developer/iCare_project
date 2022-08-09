@@ -79,7 +79,8 @@
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
         </dependency>
-
+        
+        
         <!-- DEPENDENCY FOR USING VALIDATION ANNOTATIONS -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

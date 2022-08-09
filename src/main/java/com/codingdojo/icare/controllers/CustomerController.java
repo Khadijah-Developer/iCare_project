@@ -49,7 +49,7 @@ public class CustomerController {
 	private ReviewService reviewServ;
 	
 	@GetMapping("/home")
-	public String userHome(Model model , HttpSession session) {
+	public String userHome(Model model , HttpSession session , HttpServletRequest request) {
 		
 		if (session.getAttribute("searchKey") == null) { // if searchKey null so thats mean the user didnt search so display all products !
 			model.addAttribute("products",productService.findAllProduct());

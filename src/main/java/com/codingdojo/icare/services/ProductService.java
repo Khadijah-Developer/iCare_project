@@ -1,5 +1,6 @@
 package com.codingdojo.icare.services;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,9 +56,56 @@ public class ProductService {
 	public List<Product> searchByNameOrBrand(String searchKey){
 		return productRepo.findByNameContainingOrBrandContaining(searchKey, searchKey);
 	}
+<<<<<<< HEAD
 
 	//    filter products by category  \\
 	public List<Product>  filterByCategory(String filterCategory){
 		return productRepo.findByCategory(filterCategory);
+=======
+	
+	public void reduceQuantity(Product product) {	
+		product.setCountInStock(product.getCountInStock()-1);	
+		productRepo.save(product);
+	}
+	public void addToQuantity(Product product) {	
+		product.setCountInStock(product.getCountInStock()+1);	
+		productRepo.save(product);
+	}
+	
+	public List<Product> addProduct(Product product, List<Product> cart) {
+		List<Product> newCart ;
+		if( cart == null) {
+			newCart = new ArrayList<Product>();
+			newCart.add(product);
+		    reduceQuantity(product);
+		}
+		else {  
+			newCart = cart;
+			newCart.add(product);
+			reduceQuantity(product);
+		}
+		return newCart;
+	}
+	public List<Product> removeProduct(Product product, List<Product> cart)  {
+		for (Product product2 : cart) {
+			if(product2.getId().equals(product.getId())){
+				boolean removed=cart.remove(product2);
+				break;
+			}
+		}
+		addToQuantity(product);
+		return cart;
+	}
+	
+	public List<Product> removeAllProduct(Product product, List<Product> cart)  {
+		List<Product> newCart= new ArrayList<Product>();
+		for (int i=0 ; i<cart.size(); i++) {
+			if(!cart.get(i).getName().equals(product.getName())){
+					newCart.add(cart.get(i));
+					addToQuantity(cart.get(i));	
+			}
+		}
+		return newCart;
+>>>>>>> b0c1996d017747134c735982be2c8fd5c29ef2a6
 	}
 }

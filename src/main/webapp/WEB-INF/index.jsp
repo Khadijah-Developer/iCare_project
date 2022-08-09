@@ -12,58 +12,94 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="login.css">
-<!-- For any Bootstrap that uses JS or jQuery-->
-<script src="/webjars/jquery/jquery.min.js"></script>
-<script src="/webjars/bootstrap/js/bootstrap.min.js"></script>
-
 <meta charset="UTF-8">
 <title>Register & Login</title>
+<!-- css and js in static folder -->
+	
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <!-- jQuery library -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <!-- Popper JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <!-- Latest compiled JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  	
+  	<link rel="stylesheet" type="text/css" href="/css/login.css">
+  	
 </head>
 <body>
+<div class="overlay">
+		<div class="box"> 
 		<c:if test="${not empty error}">
 			<div><c:out value="${error}"/></div>
 		</c:if>
-		<div class="main">  	
-		<input type="checkbox" id="chk" aria-hidden="true">
-
-			<div class="signup">
-				<form:form method="post" modelAttribute="newUser" action="/register">
-					<label for="chk" aria-hidden="true">Sign up</label>
-					<form:input path="fName" placeholder="First name" cssErrorClass="form-control is-invalid" />
+		 	<div class="row login-tab">
+      <div class="col login link" id="login-link">
+        <h4 id="login-heading"> Login</h4>
+      </div>
+      <div class="col signup link" id="signup-link">
+        <h4 id="signup-heading"> Sign Up </h4>
+      </div>
+    </div>
+    <div id="login-box">
+				<form:form method="post" modelAttribute="loginUser"  id="login-form" action="/login">
+					<div class="form-group">
+					<form:input path="email" type="email" name="email" class="form-control" cssErrorClass="form-control is-invalid"/>
+					<form:label path="email">Email</form:label>
+					<div class="invalid-feedback small" id="email-error"></div>
+					</div>
+					<div class="form-group">
+					<form:input path="password" id="login-pass" type="password" name="password" class="form-control" cssErrorClass="form-control is-invalid"/>
+					<i toggle="#login-pass" class="fa fa-eye toggle-password" id="toggle-login-pass"></i>
+					<form:label path="password">Password</form:label>
+					<div class="invalid-feedback small" id="password-error"></div>
+					</div>
+					<button type="submit" class="btn_style btn-block">Login</button>
+				</form:form>
+			</div>
+			<div id="signup-box">
+				<form:form method="post" modelAttribute="newUser" id="signup-form" action="/register">
+					<div class="form-group">
+					<form:input path="fName" class="form-control" cssErrorClass="form-control is-invalid" />
+				    <form:label path="fName">First Name</form:label>
 					<form:errors path="fName" cssClass="invalid-feedback"/>
+					<div class="invalid-feedback small" id="fName-error"></div>
+					</div>
+					<div class="form-group">
+					<form:input path="lName" class="form-control" cssErrorClass="form-control is-invalid"/>
+					<form:label path="lName">Last Name</form:label>
+					<div class="invalid-feedback small" id="lName-error"></div>
 					
-					<form:input path="lName" placeholder="Last name" cssErrorClass="form-control is-invalid"/>
-					<form:errors path="lName" class="small"/>
-					
-					<form:input path="phoneNo" placeholder="Phone No" cssErrorClass="form-control is-invalid"/>
-					<form:errors path="phoneNo" class="small"/>
-	
-	                <form:input path="email" placeholder="Email" cssErrorClass="form-control is-invalid"/>
-					<form:errors path="email" class="small"/>
-					
-					<form:input path="password" placeholder="Password" cssErrorClass="form-control is-invalid"/>
-					<form:errors path="password" class="small"/>
-					
-					<form:input path="confirmPassword" placeholder="Confirm Password" cssErrorClass="form-control is-invalid"/>
-					<form:errors path="confirmPassword" class="small"/>
-					<button type="submit" value="Register">Sign up</button>
+					</div>
+					<div class="form-group">
+					<form:input path="phoneNo" class="form-control" cssErrorClass="form-control is-invalid"/>
+					<form:label path="phoneNo">Phone No</form:label>
+					<div class="invalid-feedback small" id="phoneNo-error"></div>
+	                </div>
+	                <div class="form-group">
+	                <form:input path="email" class="form-control" cssErrorClass="form-control is-invalid"/>
+					<form:label path="email">Email</form:label>
+					<div class="invalid-feedback small" id="email-error"></div>
+					</div>
+					<div class="form-group">
+					<form:input path="password" id="login-pass" type="password" name="password" class="form-control" cssErrorClass="form-control is-invalid"/>
+					<i toggle="#login-pass" class="fa fa-eye toggle-password" id="toggle-login-pass"></i>
+					<form:label path="password">Password</form:label>
+					<div class="invalid-feedback small" id="password-error"></div>
+					</div>
+					<div class="form-group">
+					<form:input path="confirmPassword" id="confirm-pass" name="confirm-password" class="form-control" cssErrorClass="form-control is-invalid"/>
+					<i toggle="#confirm-pass" class="fa fa-eye toggle-password" id="toggle-confirm-pass"></i>
+					<form:label path="confirmPassword">Confirm Password</form:label>
+					<div class="invalid-feedback small" id="confirmPassword-error"></div>
+					</div>
+					<button type="submit" class="btn_style btn-block">Sign up</button>
 				</form:form>
 			</div>
 			
-            <div class="login">
-				<form:form method="post" modelAttribute="loginUser" action="/login">
-					<label for="chk" aria-hidden="true">Login</label>
-					<form:input path="email" placeholder="Email" />
-					<form:errors path="email" class="small"/>
-					
-					<form:input path="password" placeholder="Password" />
-					<form:errors path="password" class="small"/>
-					<button type="submit" value="Login">Login</button>
-				</form:form>
-			</div>
+	</div>	
 	</div>
-		
-	
+	<script type="text/javascript" src="/js/login.js"></script>
 </body>
 </html>

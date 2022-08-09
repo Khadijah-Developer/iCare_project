@@ -2,6 +2,7 @@ package com.codingdojo.icare.controllers;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -49,43 +50,105 @@ public class CustomerController {
 	private ReviewService reviewServ;
 	
 	@GetMapping("/home")
-	public String userHome(Model model , HttpSession session) {
-		model.addAttribute("products",productService.findAllProduct());
-		if (!(session.getAttribute("user_id") == null)) {
+	public String userHome(Model model , HttpSession session , HttpServletRequest request) {
+		
+		if (session.getAttribute("searchKey") == null) { // if searchKey null so thats mean the user didnt search so display all products !
+			model.addAttribute("products",productService.findAllProduct());
+			}else {
+				List<Product> searchResult = productService.searchByNameOrBrand((String)session.getAttribute("searchKey"));
+				model.addAttribute("products",searchResult);
+				request.getSession().removeAttribute("searchKey"); // remove searchKey from the session to display all products when user refresh the page ! 
+			}
+		
+		if (!(session.getAttribute("user_id") == null)) { // if the user in the session send user object to home page (to print the name there )
 			model.addAttribute("user",userService.findUser((Long) session.getAttribute("user_id")));
-	}
+	    }
+		
+		
+		if (!(session.getAttribute("cart") == null)) { // if  cart exist
+			List<Product> cart = (List<Product>) session.getAttribute("cart");
+			session.setAttribute("productCount" , cart.size());
+	    }else {
+	    	session.setAttribute("productCount" , 0);
+	    }
 		return "home.jsp";
 	}
+	
+	// add to cart from home
 	@GetMapping("/addCart/{id}")
-	public String addToCart(@PathVariable(value="id") Long id,Model model,HttpSession session, RedirectAttributes redirectAttributes) {
+	public String addToCart(@PathVariable(value="id") Long id,HttpSession session) {
 		Product product = productService.findProduct(id);
-		
-		if( session.getAttribute("cart") == null) {
-			List<Product> cart = new ArrayList<Product>();
-		    cart.add(product);
-		    session.setAttribute("cart", cart);
-		}
-		else {  
-			List<Product> cart = (List<Product>) session.getAttribute("cart");
-			cart.add(product);
-			session.setAttribute("cart", cart);
-		}
-	  return "redirect:/home";
+		List<Product> cart= productService.addProduct(product,(List<Product>) session.getAttribute("cart"));
+		session.setAttribute("cart", cart);	
+	    return "redirect:/home";
 	}
 	
+	// romove from cart at cart 
+	@GetMapping("/removeCart/{id}")
+	public String removeFromCart(@PathVariable(value="id") Long id,Model model,
+			HttpSession session, RedirectAttributes redirectAttributes) {
+		Product product = productService.findProduct(id);
+		List<Product> cart= productService.removeProduct(product,(List<Product>) session.getAttribute("cart"));
+
+		return "redirect:/cart";
+	}
+	
+	// add to cart from cart
+	@GetMapping("cart/addCart/{id}")
+	public String addAtCart(@PathVariable(value="id") Long id,Model model,HttpSession session, RedirectAttributes redirectAttributes) {
+		Product product = productService.findProduct(id);
+		List<Product> cart= productService.addProduct(product,(List<Product>) session.getAttribute("cart"));
+		//session.setAttribute("cart", cart);	
+		return "redirect:/cart";
+	}
+		
+	// romove all items of specifc product  
+	@GetMapping("/removeCart/{id}/all")
+	public String removeAtCart(@PathVariable(value="id") Long id,Model model,
+			HttpSession session, RedirectAttributes redirectAttributes) {
+		Product product = productService.findProduct(id);
+		List<Product> cart= productService.removeAllProduct(product,(List<Product>) session.getAttribute("cart"));
+		session.setAttribute("cart", cart);	
+
+		return "redirect:/cart";
+	}
+	
+	
+	
+	//show cart
 	@GetMapping("/cart")
-	public String Cart(HttpSession session) {
+	public String Cart(HttpSession session,Model model) {
 		if(session.getAttribute("totalPrice") == null) {
 			session.setAttribute("totalPrice", 0.0);
 		}
+		if (session.getAttribute("cart") == null) {
+			session.setAttribute("cart", new ArrayList<Product>());
+		}else{
 		List<Product> cart = (List<Product>) session.getAttribute("cart");
-		Double totalPrice=0.0;
-			for(Product product :cart) {
-				totalPrice+=product.getPrice();
+		HashMap<Product,Integer> cartMap = new HashMap<Product,Integer>();
+		for (Product product: cart) {
+			boolean flag =false;
+			for (Product p: cartMap.keySet()) {
+				if (p.getName().equals(product.getName())) {
+					flag=true;
+					cartMap.put(p,cartMap.get(p)+1);
+				}
 			}
+			if(flag == false) {
+				cartMap.put(product,1);
+			}
+		}
+		Double totalPrice=0.0;
+		for(Product product :cart) {
+			totalPrice+=product.getPrice();
+		}
+		model.addAttribute("cartMap",cartMap);
 		session.setAttribute("totalPrice", totalPrice);
+		}
 		return "cart.jsp";
 	}
+	
+
 	
 	// show order before confirm it and choose address and payment
 	@GetMapping("/cart/checkout")
@@ -157,17 +220,17 @@ public class CustomerController {
 //	}
 	
 	
-	@PostMapping("/search" )
-	public String search( Model model , HttpServletRequest request) {
+	 
+       @PostMapping("/search" )
+	public String search( Model model , HttpServletRequest request ,HttpSession session) {
 		String searchKey = request.getParameter("searchKey");
-		List<Product> searchResult = productService.searchByNameOrBrand(searchKey);
+		session.setAttribute("searchKey", searchKey);
 		
-		model.addAttribute("result",searchResult); 
-		model.addAttribute("searchKey", searchKey);
-		
-		
-	    return "search.jsp";
+	    return "redirect:/home";
 	    }
+	
+        
+        
 	
 	
 	@GetMapping("/new")
@@ -175,19 +238,7 @@ public class CustomerController {
 			return "new.jsp";
 	}
 	
-	@PostMapping("/addReview/{id}" )
-	public String addReview(@Valid @ModelAttribute("review") Review review,BindingResult result ,
-			HttpSession session , @PathVariable(value="id") Long product_id ,  HttpServletRequest request) {
-		User customer = userService.findUser((Long) session.getAttribute("user_id"));
-		String rate = request.getParameter("rate");
-		Double rateD = Double.parseDouble(rate);
-		review.setRating(rateD);
-		review.setCustReview(customer);
-		review.setProduct(productService.findProduct(product_id));
-		reviewServ.addReview(review);
-		return "redirect:/products/"+product_id;
-	    }
-
+	
 	@PostMapping("/applyDiscount")
 	public String applyDiscount(@RequestParam(value="discount") String discount ,	HttpSession session) {
 		// if discount in database apply it 
@@ -213,9 +264,12 @@ public class CustomerController {
 			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.order", result);
 			return "redirect:/cart/checkout";
 		}
-		System.out.println(order.getPaymentMethod());
-		System.out.println(order.getAddress());
-		System.out.println((List<Product>) session.getAttribute("cart"));
+		if (order.getAddress() == null ) { // if the customer didint enter or choose the address show error 
+			redirectAttributes.addFlashAttribute("error", "please add your address ");
+			System.out.println("add address");
+			if(!model.containsAttribute("user")) {
+				  model.addAttribute("user", userService.findUser((Long) session.getAttribute("user_id")));
+			  }
 		order=orderService.createOrder((Long) session.getAttribute("user_id"),
 				(List<Product>) session.getAttribute("cart"),
 				(Double) session.getAttribute("discount"),order);
@@ -244,6 +298,7 @@ public class CustomerController {
 	
 	   //      Delete specific order     \\
 	
+<<<<<<< HEAD
 	@DeleteMapping("/order/delete/{id}")
 	public String deleteOrder(@PathVariable("id") Long id) {
 		orderService.deleteOrder(id);
@@ -261,6 +316,39 @@ public class CustomerController {
 		model.addAttribute("filterKey", filterKey);
 	    return "redirect:/home";
 	}
+=======
+	@PostMapping("/addReview/{id}" )
+	public String addReview(@Valid @ModelAttribute("review") Review review,BindingResult result ,
+			HttpSession session , @PathVariable(value="id") Long product_id ,  HttpServletRequest request) {
+		User customer = userService.findUser((Long) session.getAttribute("user_id"));
+		String rate = request.getParameter("rate");
+		Double rateD = Double.parseDouble(rate);
+		Product product =productService.findProduct(product_id);
+		review.setRating(rateD);
+		review.setCustReview(customer);
+		review.setProduct(product);
+		reviewServ.addReview(review);
+		product.setAvgRating(getRatAvg(product)); 
+		productService.updateProduct(product_id, product);
+		return "redirect:/products/"+product_id;
+	    }
+
+
+	public Double getRatAvg(Product p) {
+		Double total = 0.0, avrg =0.0;
+		List<Review> reviews = p.getReviews();
+		
+		for (int i=0; i<reviews.size(); i++) {
+			total += reviews.get(i).getRating();	
+		}
+		if (reviews.size() == 0) { /// to prevent divide by zero (total / 0 )
+			return 0.0;
+		}
+		return avrg = total / reviews.size();
+	}
+	
+	
+>>>>>>> b0c1996d017747134c735982be2c8fd5c29ef2a6
 }
   
 

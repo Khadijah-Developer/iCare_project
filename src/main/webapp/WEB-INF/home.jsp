@@ -6,6 +6,7 @@
 			<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 				<!-- form:form -->
 				<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+				<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 					<!-- for rendering errors on PUT routes -->
 					<%@ page isErrorPage="true" %>
 						<!DOCTYPE html>
@@ -73,10 +74,11 @@
 										</form>
 
 										<ul class="navbar-nav  mb-2 mb-lg-0">
+											<c:if test="${!role.equals('admin')}">
 											<li class="nav-item">
 												<div id="ex4">
 													<a href="/cart">
-														<span class="p1 fa-stack fa-2x has-badge" data-count="5">
+														<span class="p1 fa-stack fa-2x has-badge" data-count="${productCount}">
 															<!--<i class="p2 fa fa-circle fa-stack-2x"></i>-->
 	
 															<i class="p3 fa fa-shopping-cart fa-stack-1x xfa-inverse"
@@ -85,6 +87,7 @@
 													</a>
 												</div>
 											</li>
+											</c:if>
 											<li class="nav-item dropdown">
 												<a class="nav-link dropdown-toggle" href="#" role="button"
 													data-bs-toggle="dropdown" aria-expanded="false">
@@ -194,55 +197,74 @@
 											<c:out value="${user.fName}" />
 										</h1>
 										<br>
-										<a href="/new">go new.jsp</a>
+										
 									</div>
-									<!-- <div class="d-flex flex-column align-items-end">
-			<a class="btn btn-outline-primary" style="color:#0d6efd" href = "/logout">Logout</a>
-				<br>			
-			</div> -->
+					
 								</div>
 
-								<!--<c:forEach items="${cart}" var="item">
-		<c:out value="${item.name}"/>
-		</c:forEach>-->
-								<!-- <a class="btn btn-outline-primary" style="color:#0d6efd" href="/cart">Cart</a> -->
+		
 								<p>List Products</p>
-								<table class="table">
-									<thead>
-										<tr>
-											<th scope="col">Product Name</th>
-											<th scope="col">Price</th>
-											<th scope="col">Action</th>
-										</tr>
-									</thead>
-									<tbody>
-										<c:forEach items="${products}" var="product">
-											<tr>
-												<td><u><a style="color:#0d6efd"
-															href='<c:url value="/products/${product.id}"/>'>
-															<c:out value="${product.name}" />
-														</a></u></td>
-												<td>
-													<c:out value="${product.price}" />
-												</td>
-												<td><a class="btn btn-outline-primary" style="color:#0d6efd"
-														href="/addCart/${product.id}">Add to Cart</a></td>
-											</tr>
-										</c:forEach>
-									</tbody>
-								</table>
+								
+	<c:choose>
+    <c:when test="${products.size() == 0}">
+        <h3>no products to display !! </h3>
+        <br />
+    </c:when>    
+    <c:otherwise>
+	    <table class="table">
+					<thead>
+						<tr>
+							<th scope="col">Product Name</th>
+							<th scope="col">Price</th>
+							<th scope="col">Action</th>
+							<th scope="col">Availability</th>
+						</tr>
+					</thead>
+					<tbody>
+						<c:forEach items="${products}" var="product">
+							<tr>
+								<td><u><a style="color: #0d6efd"
+										href='<c:url value="/products/${product.id}"/>'> <c:out
+												value="${product.name}" />
+									</a></u></td>
+								<td><c:out value="${product.price}" /></td>
+								
+								<c:choose>
+								<c:when test="${product.countInStock == 0}">
+								<td><a class="btn btn-outline-primary disabled"
+									style="color: #0d6efd" href="/addCart/${product.id}">Add to
+										Cart</a></td>
+
+								<td><p style="color: red">out of stock</p></td>
+										
+
+										</c:when>
+										<c:when test="${product.countInStock <= 3}">
+										
+										 <td><a class="btn btn-outline-primary"
+									style="color: #0d6efd" href="/addCart/${product.id}">Add to
+										Cart</a></td>
+											<td><p style="color: orange">about to end</p></td>
+
+										</c:when>
+										<c:otherwise>
+										<td><a class="btn btn-outline-primary "
+									style="color: #0d6efd" href="/addCart/${product.id}">Add to
+										Cart</a></td>
+										
+											<td><p style="color: green">available</p></td>
+										</c:otherwise>
+									</c:choose>
+							</tr>
+						</c:forEach>
+					</tbody>
+				</table>
 								<br>
-								<div class="d-flex flex-column align-items-end">
-									<!-- 	<a class="btn btn-outline-primary" style="color:#0d6efd" href = "/product/new">Add a Product</a>-->
-									<br>
-
-								</div>
-								<div class="d-flex flex-column align-items-end">
-									<!-- 	<a class="btn btn-outline-primary" style="color:#0d6efd" href = "/order/new">Add a Order</a> -->
-									<br>
-
-								</div>
+								
 							</div>
+				</c:otherwise>
+</c:choose>			
+							
 
 							<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
 								integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"

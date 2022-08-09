@@ -9,13 +9,12 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <!-- for rendering errors on PUT routes -->
 <%@ page isErrorPage="true" %>
+
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>Register & Login</title>
-<link rel="stylesheet" type="text/css" href="/css/login.css">
-	<script type="text/javascript" src="/js/login.js"></script>
   <!-- Latest compiled and minified CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
   <!-- jQuery library -->
@@ -24,6 +23,13 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
   <!-- Latest compiled JavaScript -->
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<!-- 
+  <link rel="stylesheet" type="text/css" href="css/login.css">
+  <script type="text/javascript" src="js/login.js"></script> -->
+
+  <link rel="stylesheet" type="text/css" href="/login.css">
+  <script type="text/javascript" src="/login.js"></script>
+
 </head>
 <body>
 		<div class="box"> 

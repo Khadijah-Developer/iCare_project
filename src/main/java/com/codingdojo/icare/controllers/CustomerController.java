@@ -298,7 +298,7 @@ public class CustomerController {
 	
 	   //      Delete specific order     \\
 	
-<<<<<<< HEAD
+
 	@DeleteMapping("/order/delete/{id}")
 	public String deleteOrder(@PathVariable("id") Long id) {
 		orderService.deleteOrder(id);
@@ -316,7 +316,7 @@ public class CustomerController {
 		model.addAttribute("filterKey", filterKey);
 	    return "redirect:/home";
 	}
-=======
+
 	@PostMapping("/addReview/{id}" )
 	public String addReview(@Valid @ModelAttribute("review") Review review,BindingResult result ,
 			HttpSession session , @PathVariable(value="id") Long product_id ,  HttpServletRequest request) {
@@ -347,8 +347,7 @@ public class CustomerController {
 		return avrg = total / reviews.size();
 	}
 	
-	
->>>>>>> b0c1996d017747134c735982be2c8fd5c29ef2a6
+
 }
   
 

@@ -61,6 +61,7 @@ public class ProductService {
 	//    filter products by category  \\
 	public List<Product>  filterByCategory(String filterCategory){
 		return productRepo.findByCategory(filterCategory);
+	}
 	
 	public void reduceQuantity(Product product) {	
 		product.setCountInStock(product.getCountInStock()-1);	

@@ -60,7 +60,7 @@ public class AuthController {
 			else {
 				session.setAttribute("user_id", user.getId());
 				session.setAttribute("role", user.getRole());
-				String pathString = "/home";
+				String pathString = "/home/1";
 				GenericResponse response = new GenericResponse();
 				response.setSuccess(true);
 				response.setData(pathString);
@@ -137,7 +137,7 @@ public class AuthController {
 				session.setAttribute("user_id", userLogged.getId());
      			session.setAttribute("role", userLogged.getRole());
      			
-				String pathString = "/home";
+				String pathString = "/home/1";
 				if(userLogged.getRole().equals("admin")){
 					pathString = "/admin";
 				}

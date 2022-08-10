@@ -54,30 +54,30 @@ public class CustomerController {
 	@Autowired
 	private ReviewService reviewServ;
 	
-	@GetMapping("/home")
-	public String userHome(Model model , HttpSession session , HttpServletRequest request) {
-		
-		if (session.getAttribute("searchKey") == null) { // if searchKey null so thats mean the user didnt search so display all products !
-			model.addAttribute("products",productService.findAllProduct());
-			}else {
-				List<Product> searchResult = productService.searchByNameOrBrand((String)session.getAttribute("searchKey"));
-				model.addAttribute("products",searchResult);
-				request.getSession().removeAttribute("searchKey"); // remove searchKey from the session to display all products when user refresh the page ! 
-			}
-		
-		if (!(session.getAttribute("user_id") == null)) { // if the user in the session send user object to home page (to print the name there )
-			model.addAttribute("user",userService.findUser((Long) session.getAttribute("user_id")));
-	    }
-		
-		
-		if (!(session.getAttribute("cart") == null)) { // if  cart exist
-			List<Product> cart = (List<Product>) session.getAttribute("cart");
-			session.setAttribute("productCount" , cart.size());
-	    }else {
-	    	session.setAttribute("productCount" , 0);
-	    }
-		return "home.jsp";
-	}
+//	@GetMapping("/home")
+//	public String userHome(Model model , HttpSession session , HttpServletRequest request) {
+//		
+//		if (session.getAttribute("searchKey") == null) { // if searchKey null so thats mean the user didnt search so display all products !
+//			model.addAttribute("products",productService.findAllProduct());
+//			}else {
+//				List<Product> searchResult = productService.searchByNameOrBrand((String)session.getAttribute("searchKey"));
+//				model.addAttribute("products",searchResult);
+//				request.getSession().removeAttribute("searchKey"); // remove searchKey from the session to display all products when user refresh the page ! 
+//			}
+//		
+//		if (!(session.getAttribute("user_id") == null)) { // if the user in the session send user object to home page (to print the name there )
+//			model.addAttribute("user",userService.findUser((Long) session.getAttribute("user_id")));
+//	    }
+//		
+//		
+//		if (!(session.getAttribute("cart") == null)) { // if  cart exist
+//			List<Product> cart = (List<Product>) session.getAttribute("cart");
+//			session.setAttribute("productCount" , cart.size());
+//	    }else {
+//	    	session.setAttribute("productCount" , 0);
+//	    }
+//		return "home.jsp";
+//	}
 	
 	@GetMapping("/home/{pageNumber}")
 	public String userHome(Model model , HttpSession session , HttpServletRequest request,

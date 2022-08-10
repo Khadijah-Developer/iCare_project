@@ -53,5 +53,18 @@ public class OrderService {
 		Optional<Order> order= orderRepo.findById(id);
 		return order.isPresent()? order.get():null ;
 	}
+	
+	//   update order    \\\
+	public Order updateOrder(Long id, Order userOrder) {
+		Order order = findOrder(id);
+		order.setOrderStatus(userOrder.getOrderStatus());
+		
+		return orderRepo.save(order);
+		
+	}
+     //      Delete specific order     \\
+	public void deleteOrder(Long id){
+			orderRepo.deleteById(id);
+	}
 
 }

@@ -15,9 +15,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotEmpty;
 
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.multipart.MultipartFile;
 
 @Entity
 @Table(name = "reviews")
@@ -32,8 +34,16 @@ public class Review {
 	
 	private Double rating = 0.0;
 	
+	// save imgs temporary 
+	@Transient
+	MultipartFile[] imgs;
+		
+	// imgs names 
 	@ElementCollection
-	private List<String> ProductImg = new ArrayList<String>();
+	private List<String> photos;
+	
+//	@ElementCollection
+//	private List<String> ProductImg = new ArrayList<String>();
 	
 	
     @Column(updatable=false)
@@ -91,19 +101,48 @@ public class Review {
 
 
 
-	public List<String> getProductImg() {
-		return ProductImg;
-	}
-
-	public void setProductImg(List<String> productImg) {
-		ProductImg = productImg;
-	}
+//	public List<String> getProductImg() {
+//		return ProductImg;
+//	}
+//
+//	public void setProductImg(List<String> productImg) {
+//		ProductImg = productImg;
+//	}
+	
+	
 
 	public Date getCreatedAt() {
 		return createdAt;
 	}
 
 
+
+	public MultipartFile[] getImgs() {
+		return imgs;
+	}
+
+	public void setImgs(MultipartFile[] img) {
+		imgs = img;
+	}
+
+	// return paths for each img
+	@Transient
+	public List<String> getPhotosImagePath() {
+		if (photos == null || id == null) return null;
+	    List<String> paths= new ArrayList<String>();
+	    for (String photo : photos) {
+	      	paths.add("/reviews/" + id + "/" + photo);
+	        }
+	    return paths;
+	    }
+	
+	public List<String> getPhotos() {
+		return photos;
+	}
+
+	public void setPhotos(List<String> photos) {
+		this.photos = photos;
+	}
 
 	public void setCreatedAt(Date createdAt) {
 		this.createdAt = createdAt;

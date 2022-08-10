@@ -9,88 +9,101 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <!-- for rendering errors on PUT routes -->
 <%@ page isErrorPage="true" %>
+
 <!DOCTYPE html>
 <html>
 <head>
-<!-- for Bootstrap CSS -->
-<link rel="stylesheet" href="/webjars/bootstrap/css/bootstrap.min.css" />
-<!-- For any Bootstrap that uses JS or jQuery-->
-<script src="/webjars/jquery/jquery.min.js"></script>
-<script src="/webjars/bootstrap/js/bootstrap.min.js"></script>
-
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>Register & Login</title>
+<<<<<<< HEAD
+=======
+<!-- css and js in static folder -->
+	
+>>>>>>> 7b6ac62d2f95347a378c0894b57fcca670bf011f
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <!-- jQuery library -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <!-- Popper JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <!-- Latest compiled JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  	
+  	<link rel="stylesheet" type="text/css" href="/css/login.css">
+  	
 </head>
 <body>
-		<div class="container w-75">
+<div class="overlay">
+		<div class="box"> 
 		<c:if test="${not empty error}">
-			<div class="alert alert-danger mt-4"><c:out value="${error}"/></div>
+			<div><c:out value="${error}"/></div>
 		</c:if>
-		<h1 class="mb-2 m-3" style="color:#0d6efd">iCare</h1>
-		<br>
-		<div class="d-flex justify-content-between">
-			
-			<div class="w-100 m-3">
-				<h3>Register</h3>
-			
-				<form:form class="border border-2 p-4 border-dark" method="post" modelAttribute="newUser" action="/register">
-					<div class="mb-3"> 
-						<form:label path="fName" class="form-label">First Name:</form:label>
-						<form:input  path="fName" cssClass="form-control" cssErrorClass="form-control is-invalid"  />
-						<form:errors path="fName" cssClass="invalid-feedback"/>
+		 	<div class="row login-tab">
+      <div class="col login link" id="login-link">
+        <h4 id="login-heading"> Login</h4>
+      </div>
+      <div class="col signup link" id="signup-link">
+        <h4 id="signup-heading"> Sign Up </h4>
+      </div>
+    </div>
+    <div id="login-box">
+				<form:form method="post" modelAttribute="loginUser"  id="login-form" action="/login">
+					<div class="form-group">
+					<form:input path="email" type="email" name="email" class="form-control" cssErrorClass="form-control is-invalid"/>
+					<form:label path="email">Email</form:label>
+					<div class="invalid-feedback small" id="email-error"></div>
 					</div>
-					<div class="mb-3"> 
-						<form:label path="lName" class="form-label">Last Name:</form:label>
-						<form:input  path="lName" cssClass="form-control" cssErrorClass="form-control is-invalid"  />
-						<form:errors path="lName" cssClass="invalid-feedback"/>
+					<div class="form-group">
+					<form:input path="password" id="login-pass" type="password" name="password" class="form-control" cssErrorClass="form-control is-invalid"/>
+					<i toggle="#login-pass" class="fa fa-eye toggle-password" id="toggle-login-pass"></i>
+					<form:label path="password">Password</form:label>
+					<div class="invalid-feedback small" id="password-error"></div>
 					</div>
-					<div class="mb-3"> 
-						<form:label path="phoneNo" class="form-label">Phone No:</form:label>
-						<form:input  path="phoneNo"  cssClass="form-control" cssErrorClass="form-control is-invalid"  />
-						<form:errors path="phoneNo" cssClass="invalid-feedback"/>
+					<button type="submit" class="btn_style btn-block">Login</button>
+				</form:form>
+			</div>
+			<div id="signup-box">
+				<form:form method="post" modelAttribute="newUser" id="signup-form" action="/register">
+					<div class="form-group">
+					<form:input path="fName" class="form-control" cssErrorClass="form-control is-invalid" />
+				    <form:label path="fName">First Name</form:label>
+					<form:errors path="fName" cssClass="invalid-feedback"/>
+					<div class="invalid-feedback small" id="fName-error"></div>
 					</div>
+					<div class="form-group">
+					<form:input path="lName" class="form-control" cssErrorClass="form-control is-invalid"/>
+					<form:label path="lName">Last Name</form:label>
+					<div class="invalid-feedback small" id="lName-error"></div>
 					
-					<div class="mb-3">
-						<form:label path="email" class="form-label">email:</form:label>
-						<form:input path="email" cssClass="form-control" cssErrorClass="form-control is-invalid"  />
-						<form:errors path="email" cssClass="invalid-feedback"/>
-					</div>					
-					<div class="mb-3">
-						<form:label path="password" class="form-label">Password: </form:label>
-						<form:input  path="password" type="password" cssClass="form-control" cssErrorClass="form-control is-invalid"  />
-						<form:errors  path="password" cssClass="invalid-feedback"/>
 					</div>
-					<div class="mb-3">
-						<form:label path="confirmPassword" class="form-label">Confirm Password: </form:label>
-						<form:input  path="confirmPassword" type="password" cssClass="form-control" cssErrorClass="form-control is-invalid"  />
-						<form:errors  path="confirmPassword" cssClass="invalid-feedback"/>
+					<div class="form-group">
+					<form:input path="phoneNo" class="form-control" cssErrorClass="form-control is-invalid"/>
+					<form:label path="phoneNo">Phone No</form:label>
+					<div class="invalid-feedback small" id="phoneNo-error"></div>
+	                </div>
+	                <div class="form-group">
+	                <form:input path="email" class="form-control" cssErrorClass="form-control is-invalid"/>
+					<form:label path="email">Email</form:label>
+					<div class="invalid-feedback small" id="email-error"></div>
 					</div>
-					<input style="background-color:#0dcaf0; border-color: #0dcaf0;" type="submit" value="Register" class="btn btn-dark ">
+					<div class="form-group">
+					<form:input path="password" id="login-pass" type="password" name="password" class="form-control" cssErrorClass="form-control is-invalid"/>
+					<i toggle="#login-pass" class="fa fa-eye toggle-password" id="toggle-login-pass"></i>
+					<form:label path="password">Password</form:label>
+					<div class="invalid-feedback small" id="password-error"></div>
+					</div>
+					<div class="form-group">
+					<form:input path="confirmPassword" id="confirm-pass" name="confirm-password" class="form-control" cssErrorClass="form-control is-invalid"/>
+					<i toggle="#confirm-pass" class="fa fa-eye toggle-password" id="toggle-confirm-pass"></i>
+					<form:label path="confirmPassword">Confirm Password</form:label>
+					<div class="invalid-feedback small" id="confirmPassword-error"></div>
+					</div>
+					<button type="submit" class="btn_style btn-block">Sign up</button>
 				</form:form>
 			</div>
-			<div class="w-100 ml-3 m-3">
-				
-					<h3>Login</h3>
-				
-				<form:form class="border border-2 p-4 border-dark" method="post" modelAttribute="loginUser" action="/login">
-					<div class="mb-3"> 
-						<form:label path="email" class="form-label">email:</form:label>
-						<form:input  path="email" cssClass="form-control" cssErrorClass="form-control is-invalid"  />
-						<form:errors path="email" cssClass="invalid-feedback"/>
-					</div>
-					<div class="mb-3">
-						<form:label path="password" class="form-label">Password: </form:label>
-						<form:input  path="password" type="password" cssClass="form-control" cssErrorClass="form-control is-invalid"  />
-						<form:errors  path="password" cssClass="invalid-feedback"/>
-					</div>
-					<input style="background-color:#0dcaf0; border-color: #0dcaf0;" type="submit" value="Login" class="btn btn-dark">
-				</form:form>
-			</div>
-		
-		</div>
-		
+			
+	</div>	
 	</div>
-    
-	
+	<script type="text/javascript" src="/js/login.js"></script>
 </body>
 </html>

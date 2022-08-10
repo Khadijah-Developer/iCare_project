@@ -1,0 +1,152 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    background-image: url("/image/background_login.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+.overlay {
+    background-color: rgba(0, 0, 0, 0.1);
+    height: 100vh;
+}
+  
+  .box {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 500px;
+    height: auto;
+    padding: 40px;
+    transform: translate(-50%, -50%);
+    background: rgb(0, 0, 0, 0.4);
+    box-sizing: border-box;
+    box-shadow: 10px 15px 25px rgba(0, 0, 0, 0.6);
+    border-radius: 10px;
+  }
+  
+  .login-tab {
+    position: relative;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 10px;
+    padding: 5px;
+    margin-top: -10px;
+    margin-left: 1px;
+  }
+  
+  .login-tab .col {
+    width: 100%;
+    color:#A188A4;
+    float: left;
+    cursor: pointer;
+    padding: 5px;
+    padding-top: 8px;
+  }
+  
+  .box .form-group {
+    position: relative;
+  }
+  
+  .box .form-group input {
+    width: 100%;
+    padding: 10px 0;
+    font-size: 15px;
+    padding-left: 15px;
+    padding-top: 15px;
+    color: #ccc;
+    margin-bottom: 8px;
+    border: none;
+    border-bottom: 1px solid #A188A4;
+    outline: none;
+    background: transparent;
+  }
+  
+  .box .form-group input:-webkit-autofill,
+  .box .form-group input:-webkit-autofill:hover,
+  .box .form-group input:-webkit-autofill:focus {
+    border: none;
+    border-bottom: 1px solid #A188A4;
+    -webkit-text-fill-color: #ccc;
+    transition: background-color 5000s ease-in-out 0s;
+  }
+  
+  .box .form-group label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 10px 10px;
+    font-size: 15px;
+    color: #ccc;
+    pointer-events: none;
+    transition: 0.5s;
+  }
+  
+  .box .form-group input:focus~label,
+  .box .form-group input:valid~label {
+    top: -20px;
+    left: 0;
+    color: #A188A4;
+    font-size: 13px;
+  }
+  
+  .remember-forgot-tab {
+    margin-top: -10px;
+    margin-bottom: 20px;
+    line-height: 16px;
+  }
+  
+  .checkbox label {
+    float: left;
+  }
+  
+  .forgot-pass label {
+    float: right;
+  }
+  
+  .remember-forgot-tab .checkbox label,
+  .remember-forgot-tab .forgot-pass a {
+    text-decoration: none;
+    color: #59B4B4;
+    font-size: 15px;
+    cursor: pointer;
+  }
+  
+  .remember-forgot-tab label:hover,
+  .remember-forgot-tab a:hover {
+    color: #ccc;
+    font-size: 15px;
+  }
+  
+  .remember-forgot-tab .checkbox input {
+    position: absolute;
+    line-height: 10px;
+    height: 10px;
+    width: 10px;
+  }
+  .box .form-group .toggle-password {
+    float: right;
+    position: relative;
+    cursor: pointer;
+    opacity: 0.85;
+    color: #ccc;
+  }
+.small{
+	color:red;
+	font-size: 12px;
+	margin-top:-10px;
+}
+
+#signup-box {
+	display: none;	
+}
+.btn_style { 
+  background-color: #b38aa8;
+    border: none;
+    padding: 10px;
+  border-radius:3px;
+  box-shadow: 1px 5px 20px -5px rgba(0,0,0,0.4);
+    color: #fff;
+  margin-top: 10px;
+  cursor: pointer;
+  }

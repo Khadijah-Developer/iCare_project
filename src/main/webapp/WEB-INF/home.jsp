@@ -191,7 +191,7 @@
 								<c:forEach items="${products}" var="product">
 								<a href='<c:url value="/products/${product.id}/1"/>'> 
 								<div class="container-cards mt-2">
-									<img src="/image/skin1.jpg" alt="">
+									<img src="${product.photosImagePath[0]}" alt="">
 									<div class="content">
 										<div class="box">
 											<span class="class1">Product Name</span>

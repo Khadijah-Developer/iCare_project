@@ -5,9 +5,14 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.codingdojo.icare.models.Product;
+import com.codingdojo.icare.models.Review;
 import com.codingdojo.icare.repos.ProductRepo;
 
 @Service
@@ -107,4 +112,11 @@ public class ProductService {
 		return newCart;
 
 	}
+	
+	private static final int PAGE_SIZE = 3;
+    public Page<Product> productsPerPage(int pageNumber) {
+    	Pageable pageable = PageRequest.of(pageNumber, PAGE_SIZE, Sort.Direction.DESC, "createdAt");
+        Page<Product> products = productRepo.findAllProducts(pageable);
+        return productRepo.findAllProducts(pageable);
+    }
 }

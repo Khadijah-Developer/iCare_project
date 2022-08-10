@@ -189,8 +189,9 @@
 							</div>
 							  
 							<section class="all-products d-flex justify-content-around container">
-						
-								<c:forEach items="${products}" var="product">
+							<c:choose>
+								<c:when test="${not empty products.content}">
+									<c:forEach items="${products.content}" var="product">
 								<a href='<c:url value="/products/${product.id}/1"/>'> 
 								<div class="container-cards mt-2">
 									<img src="${product.photosImagePath[0]}" alt="">
@@ -236,27 +237,82 @@
 								</div>
 									 </a> 
 						     	</c:forEach>
+									
+								</c:when>
+								<c:otherwise>
+									<c:forEach items="${products}" var="product">
+								<a href='<c:url value="/products/${product.id}/1"/>'> 
+								<div class="container-cards mt-2">
+									<img src="${product.photosImagePath[0]}" alt="">
+									<div class="content">
+										<div class="box">
+											<span class="class1">Product Name</span>
+											<span class="class2"><c:out value="${product.name}" /></span>
+											<span class="class3"><c:out value="${product.price}"/></span>
+										</div>
+										<div class="box">
+											<span class="class1">Brand</span>
+											<span class="class2"><c:out value="${product.brand}" /></span>
+										</div>
+										<div class="box">
+											<span class="class1">Review</span>
 
+										
+						 				<c:forEach begin="1" end="${product.avgRating}" var="index">
+			     	              		 <i  class="fas fa-star text-warning"></i>
+			                          		</c:forEach>
+				                      	<c:forEach begin="1" end="${5-product.avgRating}" var="index">
+				                      		<i class="far fa-star text-warning"></i>
+				                      	</c:forEach>
+								
+
+										</div>
+
+										<c:choose>
+											<c:when test="${product.countInStock > 0}">
+												<a class="btn button-cart" 
+												href="/addCart/${product.id}" >Add to Cart
+											   </a>
+											</c:when>
+											<c:otherwise>
+												<a style="pointer-events: none; opacity: 0.4; background-color:rgb(148, 145, 145)" class="btn button-cart" 
+												href="/addCart/${product.id}" >out of stock
+											   </a> 
+											</c:otherwise>
+										</c:choose>
+
+
+									</div>
+								</div>
+									 </a> 
+						     	</c:forEach>
+									
+								</c:otherwise>
+							</c:choose>
+								
 							</section>
-							<div>
-								<nav aria-label="Page navigation example">
-									<ul class="pagination">
-									  <li class="page-item">
-										<a class="page-link" href="#" aria-label="Previous">
-										  <span aria-hidden="true">&laquo;</span>
-										</a>
-									  </li>
-									  <li class="page-item"><a class="page-link" href="#">1</a></li>
-									  <li class="page-item"><a class="page-link" href="#">2</a></li>
-									  <li class="page-item"><a class="page-link" href="#">3</a></li>
-									  <li class="page-item">
-										<a class="page-link" href="#" aria-label="Next">
-										  <span aria-hidden="true">&raquo;</span>
-										</a>
-									  </li>
-									</ul>
-								  </nav>
-							</div>
+							<div class="d-flex justify-content-center">
+							<nav aria-label="Page navigation example" >
+								<ul class="pagination">
+								    <li class="page-item">
+								      <a style="color:#683e68" class="page-link" href="/home/1" aria-label="Previous">
+								        <span aria-hidden="true">&laquo;</span>
+								        <span class="sr-only">Previous</span>
+								      </a>
+								    </li>
+									<c:forEach begin="1" end="${totalPages}" var="index">
+										<li class="page-item"><a  style="color:#683e68" class="page-link" href="/home/${index}">${index}</a></li>
+							    	</c:forEach>
+								    
+								    <li class="page-item">
+								      <a  style="color:#683e68" class="page-link" href="/home/${totalPages}" aria-label="Next">
+								        <span aria-hidden="true">&raquo;</span>
+								        <span class="sr-only">Next</span>
+								      </a>
+								    </li>
+								  </ul>
+							</nav>
+					    	</div>
 
 							<section class="statistics">
 								<div class="container">

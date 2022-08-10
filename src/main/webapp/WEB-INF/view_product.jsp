@@ -280,7 +280,7 @@
 		<nav aria-label="Page navigation example" >
 			<ul class="pagination">
 			    <li class="page-item">
-			      <a style="color:#683e68" class="page-link" href="#" aria-label="Previous">
+			      <a style="color:#683e68" class="page-link" href="/products/${product.id}/1" aria-label="Previous">
 			        <span aria-hidden="true">&laquo;</span>
 			        <span class="sr-only">Previous</span>
 			      </a>
@@ -290,7 +290,7 @@
 		    	</c:forEach>
 			    
 			    <li class="page-item">
-			      <a  style="color:#683e68" class="page-link" href="#" aria-label="Next">
+			      <a  style="color:#683e68" class="page-link" href="/products/${product.id}/${totalPages}" aria-label="Next">
 			        <span aria-hidden="true">&raquo;</span>
 			        <span class="sr-only">Next</span>
 			      </a>

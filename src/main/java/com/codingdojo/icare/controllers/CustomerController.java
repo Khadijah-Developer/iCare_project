@@ -245,11 +245,10 @@ public class CustomerController {
 		}
 		if (order.getAddress() == null ) { // if the customer didint enter or choose the address show error 
 			redirectAttributes.addFlashAttribute("error", "please add your address ");
-			System.out.println("add address");
+			System.out.println("add address");}
 			if(!model.containsAttribute("user")) {
 				  model.addAttribute("user", userService.findUser((Long) session.getAttribute("user_id")));
 			  }
-		}
 		order=orderService.createOrder((Long) session.getAttribute("user_id"),
 				(List<Product>) session.getAttribute("cart"),
 				(Double) session.getAttribute("discount"),order);

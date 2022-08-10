@@ -27,8 +27,9 @@ body {
  height : 400px;
 }
 
-
-
+.navbar-expand-lg .navbar-nav .dropdown-menu {
+    left: -52px;
+}
 /* on ex2 if you include bootstrap v3 css the number is a rounded circle with the .has-badge class */
 #ex2 .fa-stack[data-count]:after{
   position:absolute;
@@ -352,4 +353,12 @@ a:focus,
 a:focus-visible{
 color:transparent;
  text-decoration: none;
+}
+
+.btn-search{
+  background-color: #b38aa8;
+    border: none;
+  border-radius:3px;
+  box-shadow: 1px 5px 20px -5px rgba(0,0,0,0.4);
+    color: #fff;
 }

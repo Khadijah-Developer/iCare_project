@@ -3,6 +3,8 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@page isELIgnored="false" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
+
 
 <!DOCTYPE html>
 <head>
@@ -191,50 +193,14 @@
 		}
 
 
-.stars-container {
-  position: relative;
-  display: inline-block;
-  color: transparent;
-}
-
-.stars-container:before {
-  position: absolute;
-  top: 0;
-  left: 0;
-  content: '★★★★★';
-  color: lightgray;
-}
-
-.stars-container:after {
-  position: absolute;
-  top: 0;
-  left: 0;
-  content: '★★★★★';
-  color: gold;
-  overflow: hidden;
-}
-
-.stars-0:after { width: 0%; }
-.stars-10:after { width: 10%; }
-.stars-20:after { width: 20%; }
-.stars-30:after { width: 30%; }
-.stars-40:after { width: 40%; }
-.stars-50:after { width: 50%; }
-.stars-60:after { width: 60%; }
-.stars-70:after { width: 70%; }
-.stars-80:after { width: 80%; }
-.stars-90:after { width: 90%; }
-.stars-100:after { width: 100; }
-
-
-
-
 /* Modified from: https://github.com/mukulkant/Star-rating-using-pure-css */
         </style>
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css" rel="stylesheet">
-       
-        <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-        </head>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" 
+        integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" 
+        crossorigin="anonymous" referrerpolicy="no-referrer" />                      
+        
+</head>
 <body>
 	<div class="container ">
 		
@@ -279,11 +245,20 @@
 			<p><b>Category:</b> <c:out value="${product.category}"/></p>
 			<h4><c:out value="${product.price}"/> SAR</h4>
 			<h6>Average Rating: <fmt:formatNumber type="number" maxFractionDigits="1" value="${product.avgRating}"/>/5</h6>
+			<c:forEach begin="1" end="${product.avgRating}" var="index">
+						<i  class="fas fa-star text-warning"></i>
+					</c:forEach>
+					<c:set var="rouund" value="${fn:substringBefore(product.avgRating, '.')}"/>
+					<c:if test="${rouund != product.avgRating}"><i class='fa-solid fa-star-half-stroke text-warning'></i></c:if>
+					
+					<c:forEach begin="1" end="${5-product.avgRating}" var="index">
+						<i class="far fa-star text-warning"></i>
+					</c:forEach>
 			<hr>
 			<p> <c:out value="${product.description}"/></p>
 			<hr>
-			<input value=1 type="number">
-			<a class="btn btn-dark" href="#">Add to Cart</a>
+			
+			<a class="btn btn-dark" href="/addCart/${product.id}">Add to Cart</a>
 
 		</div>
 	</div>
@@ -328,7 +303,13 @@
 			<c:forEach items="${reviews.content}" var="review">
 				<p><b><c:out value="${review.custReview.fName}"/></b></p>
 				<div  class="ml-2">
-					<p class="m-0">Rating: <c:out value="${review.getRating()}"/></p>
+					<p class="m-0">Rating: 
+					<c:forEach begin="1" end="${review.getRating()}" var="index">
+						<i  class="fas fa-star text-warning"></i>
+					</c:forEach>
+					<c:forEach begin="1" end="${5-review.getRating()}" var="index">
+						<i class="far fa-star text-warning"></i>
+					</c:forEach>
 					<p>Reviewed on<c:out value="${review.getCreatedAt()}"/></p>
 				    <p><c:out value="${review.getComment()}"/></p>
 			    </div>
@@ -348,7 +329,7 @@
 			    </div>
 			    <hr>
 			     </c:forEach>
-		</div> 
+		</div>
 		<div class="d-flex justify-content-center">
 		<nav aria-label="Page navigation example" >
 			<ul class="pagination">
@@ -361,7 +342,6 @@
 				<c:forEach begin="1" end="${totalPages}" var="index">
 					<li class="page-item"><a  style="color:#683e68" class="page-link" href="/products/${product.id}/${index}">${index}</a></li>
 		    	</c:forEach>
-			    
 			    <li class="page-item">
 			      <a  style="color:#683e68" class="page-link" href="#" aria-label="Next">
 			        <span aria-hidden="true">&raquo;</span>

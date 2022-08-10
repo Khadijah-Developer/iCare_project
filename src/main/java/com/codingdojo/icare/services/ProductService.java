@@ -57,7 +57,6 @@ public class ProductService {
 		return productRepo.findByNameContainingOrBrandContaining(searchKey, searchKey);
 	}
 
-
 	//    filter products by category  \\
 	public List<Product>  filterByCategory(String filterCategory){
 		return productRepo.findByCategory(filterCategory);

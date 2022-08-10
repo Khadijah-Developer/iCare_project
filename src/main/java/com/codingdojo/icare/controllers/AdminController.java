@@ -10,6 +10,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -30,6 +31,7 @@ import com.codingdojo.icare.models.User;
 import com.codingdojo.icare.requests.FileUploadUtil;
 import com.codingdojo.icare.services.OrderService;
 import com.codingdojo.icare.services.ProductService;
+import com.codingdojo.icare.services.ReviewService;
 import com.codingdojo.icare.services.UserService;
 
 
@@ -45,7 +47,8 @@ public class AdminController {
 	@Autowired
 	private OrderService orderService;
 	
-
+	@Autowired
+	private ReviewService reviewServ;
 	
 	@GetMapping("/admin")
 	public String adminHome(Model model, HttpSession session,@ModelAttribute("order")Order order, RedirectAttributes redirectAttributes) {
@@ -116,25 +119,41 @@ public class AdminController {
         return "redirect:/admin";
 	}
 	
-	@GetMapping("products/{id}")
+	@GetMapping("products/{id}/{pageNumber}")
 	public String product(@PathVariable(value="id") Long id, Model model, HttpSession session, 
-			RedirectAttributes redirectAttributes , @ModelAttribute("review") Review review) throws URISyntaxException {
+			RedirectAttributes redirectAttributes , 
+			@ModelAttribute("review") Review review,
+			@PathVariable("pageNumber") int pageNumber) throws URISyntaxException {
 		
 		// if user did not register or logged in 
 		if (!(session.getAttribute("user_id") == null)) {
 			model.addAttribute("user",userService.findUser((Long) session.getAttribute("user_id")));
 		}
+		
+
+		if (!model.containsAttribute("review")) {
+			model.addAttribute("review", new Review());
+		}
+		
 		Product product = productService.findProduct(id);
 		model.addAttribute("product", product);
-		
+		 System.out.println(1);
+	    Page<Review> reviews = reviewServ.reviewsPerPage(pageNumber - 1,product);
+	   
+	    // total number of pages that we have
+	    int totalPages = reviews.getTotalPages();
+	    model.addAttribute("totalPages", totalPages);
+	    model.addAttribute("reviews", reviews);
 		return "/view_product.jsp";
 		}
+	
 	@DeleteMapping("/products/{id}/delete")
 	public String Delete(@PathVariable("id") Long id,RedirectAttributes redirectAttributes) {
 		this.productService.delete(id);
 		redirectAttributes.addFlashAttribute("success", "product was deleted successfully");
 		return "redirect:/admin";
 	}
+	
 	// product edit product form
 		@GetMapping("/products/{id}/edit")
 		public String editProduct(Model model,@PathVariable("id") Long id) {

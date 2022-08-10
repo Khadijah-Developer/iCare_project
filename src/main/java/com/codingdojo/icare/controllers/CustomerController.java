@@ -1,6 +1,7 @@
 package com.codingdojo.icare.controllers;
 
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,8 +11,10 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.codingdojo.icare.models.Address;
@@ -26,6 +30,7 @@ import com.codingdojo.icare.models.Order;
 import com.codingdojo.icare.models.Product;
 import com.codingdojo.icare.models.Review;
 import com.codingdojo.icare.models.User;
+import com.codingdojo.icare.requests.FileUploadUtil;
 import com.codingdojo.icare.services.AddressService;
 import com.codingdojo.icare.services.OrderService;
 import com.codingdojo.icare.services.ProductService;
@@ -78,6 +83,7 @@ public class CustomerController {
 	@GetMapping("/addCart/{id}")
 	public String addToCart(@PathVariable(value="id") Long id,HttpSession session) {
 		Product product = productService.findProduct(id);
+		
 		List<Product> cart= productService.addProduct(product,(List<Product>) session.getAttribute("cart"));
 		session.setAttribute("cart", cart);	
 	    return "redirect:/home";
@@ -97,19 +103,22 @@ public class CustomerController {
 	@GetMapping("cart/addCart/{id}")
 	public String addAtCart(@PathVariable(value="id") Long id,Model model,HttpSession session, RedirectAttributes redirectAttributes) {
 		Product product = productService.findProduct(id);
+		if(product.getCountInStock()<=0) {
+			redirectAttributes.addFlashAttribute("error", "Stocks are not enough");
+			return "redirect:/cart";
+		}
 		List<Product> cart= productService.addProduct(product,(List<Product>) session.getAttribute("cart"));
 		//session.setAttribute("cart", cart);	
 		return "redirect:/cart";
 	}
 		
-	// romove all items of specifc product  
+	// Remove all items of specific product  
 	@GetMapping("/removeCart/{id}/all")
 	public String removeAtCart(@PathVariable(value="id") Long id,Model model,
 			HttpSession session, RedirectAttributes redirectAttributes) {
 		Product product = productService.findProduct(id);
 		List<Product> cart= productService.removeAllProduct(product,(List<Product>) session.getAttribute("cart"));
-		session.setAttribute("cart", cart);	
-
+		session.setAttribute("cart", cart);
 		return "redirect:/cart";
 	}
 	
@@ -149,18 +158,13 @@ public class CustomerController {
 	}
 	
 
-	
 	// show order before confirm it and choose address and payment
 	@GetMapping("/cart/checkout")
 	public String checkout(Model model,HttpSession session, RedirectAttributes redirectAttributes){
-		  //System.out.print(session.getAttribute("user_id"));
 		  if(session.getAttribute("user_id") == null) {
 			  redirectAttributes.addFlashAttribute("error", "you need to login/register first");
 			  return "redirect:/";
 		  }
-//		  if(!model.containsAttribute("address")) {
-//			  model.addAttribute("address", new Address());
-//		  }
 		  if(!model.containsAttribute("order")) {
 			  model.addAttribute("order", new Order());
 		  }
@@ -183,9 +187,6 @@ public class CustomerController {
 			  model.addAttribute("address", new Address());
 		  }
 	
-//		  if(!model.containsAttribute("user")) {
-//			  model.addAttribute("user", userService.findUser((Long) session.getAttribute("user_id")));
-//		  }
 		  return "create_address.jsp";
 	}
 	
@@ -205,23 +206,9 @@ public class CustomerController {
 		return "redirect:/cart/checkout";
 	}
 	
-	//choose payment  
-//	@PostMapping("/user/payment")
-//	public String addpayment(@RequestParam("payment") String payment,BindingResult result,
-//		  RedirectAttributes redirectAttributes, HttpSession session) {
-//		if(result.hasErrors()) {
-//			redirectAttributes.addFlashAttribute("v", payment);
-//			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.payment", result);
-//			return "redirect:/cart/checkout";
-//		}
-//		//session.setAttribute("payment",payment);
-//		orderService.createOrder((Long) session.getAttribute("user_id"),(List<Product>) session.getAttribute("cart"));
-//		return "redirect:/cart/checkout";
-//	}
-	
 	
 	 
-       @PostMapping("/search" )
+    @PostMapping("/search" )
 	public String search( Model model , HttpServletRequest request ,HttpSession session) {
 		String searchKey = request.getParameter("searchKey");
 		session.setAttribute("searchKey", searchKey);
@@ -230,15 +217,7 @@ public class CustomerController {
 	    }
 	
         
-        
-	
-	
-	@GetMapping("/new")
-	public String newE() {
-			return "new.jsp";
-	}
-	
-	
+	// discount function -- need to edit + add table to save codes and amount of dicsount and expired date
 	@PostMapping("/applyDiscount")
 	public String applyDiscount(@RequestParam(value="discount") String discount ,	HttpSession session) {
 		// if discount in database apply it 
@@ -270,10 +249,13 @@ public class CustomerController {
 			if(!model.containsAttribute("user")) {
 				  model.addAttribute("user", userService.findUser((Long) session.getAttribute("user_id")));
 			  }
+		}
 		order=orderService.createOrder((Long) session.getAttribute("user_id"),
 				(List<Product>) session.getAttribute("cart"),
 				(Double) session.getAttribute("discount"),order);
 		model.addAttribute(order);
+		session.setAttribute("cart",new ArrayList<Product>());
+		session.setAttribute("totalPrice", 0.0);
 		return "redirect:/summary/"+order.getId();
 	}
 	
@@ -298,7 +280,6 @@ public class CustomerController {
 	
 	   //      Delete specific order     \\
 	
-
 	@DeleteMapping("/order/delete/{id}")
 	public String deleteOrder(@PathVariable("id") Long id) {
 		orderService.deleteOrder(id);
@@ -319,18 +300,49 @@ public class CustomerController {
 
 	@PostMapping("/addReview/{id}" )
 	public String addReview(@Valid @ModelAttribute("review") Review review,BindingResult result ,
-			HttpSession session , @PathVariable(value="id") Long product_id ,  HttpServletRequest request) {
+			HttpSession session , @PathVariable(value="id") Long product_id ,  HttpServletRequest request,
+			RedirectAttributes redirectAttributes) throws IOException {
 		User customer = userService.findUser((Long) session.getAttribute("user_id"));
+		if (result.hasErrors()) {
+			System.out.println(result);
+			redirectAttributes.addFlashAttribute("review",review);
+			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.product",result);
+			return "redirect:/products/"+product_id+"/1";
+        } 
 		String rate = request.getParameter("rate");
 		Double rateD = Double.parseDouble(rate);
 		Product product =productService.findProduct(product_id);
 		review.setRating(rateD);
 		review.setCustReview(customer);
 		review.setProduct(product);
+		review = reviewServ.addReview(review);
+		
+		// list to store full paths
+		List<String> pathImgs = new ArrayList<String>();
+		System.out.println(review.getImgs()+" here");
+		// loop on the list of imgs
+		for (MultipartFile img: review.getImgs()) {
+			System.out.println(2);
+			//store filename
+			String fileName = StringUtils.cleanPath(img.getOriginalFilename());
+			
+			//add filename to list of paths which will be stored in db
+			pathImgs.add(fileName);
+					
+			// create a path 
+			String uploadDir = "reviews/"+ review.getId();
+					
+			// save the img on the above path
+			FileUploadUtil.saveFile(uploadDir, fileName, img);
+			}
+				
+		// save the paths in db
+		review.setPhotos(pathImgs);
 		reviewServ.addReview(review);
+		
 		product.setAvgRating(getRatAvg(product)); 
 		productService.updateProduct(product_id, product);
-		return "redirect:/products/"+product_id;
+		return "redirect:/products/"+product_id+"/1";
 	    }
 
 
@@ -346,7 +358,6 @@ public class CustomerController {
 		}
 		return avrg = total / reviews.size();
 	}
-	
 
 }
   

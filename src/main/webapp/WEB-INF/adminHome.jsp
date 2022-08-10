@@ -130,7 +130,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome
 			<tbody>
 				<c:forEach items="${products}" var="product">
 					<tr>	
-						<td ><u><a style="color:#0d6efd"  href='<c:url value="/products/${product.id}"/>' ><c:out value="${product.name}"/></a></u></td>
+						<td ><u><a style="color:#0d6efd"  href='<c:url value="/products/${product.id}/1"/>' ><c:out value="${product.name}"/></a></u></td>
 						<td ><c:out value="${product.price}"/></td>
 						<td ><c:out value="${product.countInStock }"/></td>
 					</tr>
@@ -150,36 +150,14 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome
 					<th scope="col">Customer Name</th>
 					<th scope="col">Total</th>
 					<th scope="col" >Order Status</th>
-					<th scope="col" >Update Order Status</th>
 				</tr>
 			</thead>
 			<tbody>
 				<c:forEach items="${orders}" var="order">
 					<tr>	
-						<td ><a style="color:#0d6efd"  href='<c:url value="/summary/${order.id}"/>' ><c:out value="${order.customer.fName}"/></a></td>
+						<td ><a style="color:#0d6efd"  href='<c:url value="/order/${order.id}"/>' ><c:out value="${product.customer.fName}"/></a></td>
 						<td ><c:out value="${order.totalPrice}"/></td>
 						<td ><c:out value="${order.orderStatus }"/></td>
-						<td>
-						   <%-- If the order status not equals to shipped will be hidden --%>
-                        <c:if test="${!order.orderStatus.equals('shipped')}">
-						<%-- Update order status form --%>
-						<form:form  action="/order/status/${order.id}" method="put" modelAttribute="order">
-						<div class="d-flex justify-content-among m-2">
-						<div class="mb-3"> 
-							<form:select path="orderStatus" cssClass="form-control" cssErrorClass="form-control is-invalid">
-									<form:option value="processed"> Processed</form:option>
-									<form:option value="shipped"> Shipped</form:option>
-									<form:option value="deliverd"> Deliverd</form:option>
-							</form:select>
-					    </div>
-						<div>
-						<input type="submit" id="submit" value="Update" class="btn btn-outline-dark">
-						</div>
-						</div>
- 						</form:form>
-						</c:if>
-						<%-- Update order status form --%>
-						</td>
 					</tr>
 				</c:forEach>
 			</tbody>

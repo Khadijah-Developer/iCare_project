@@ -15,6 +15,7 @@
 						<head>
 							<meta charset="UTF-8">
 							<!-- CSS only -->
+							<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 							<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css"
 								rel="stylesheet"
 								integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx"
@@ -27,7 +28,8 @@
 							<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 							<script type="text/javascript" src="/counter.js"></script>
 							<title>Home</title>
-						
+							
+
 						</head>
 
 						<body>
@@ -204,53 +206,36 @@
 										</div>
 										<div class="box">
 											<span class="class1">Review</span>
-											<span class="class2">
-												<span class="fa fa-star checked"></span>
-												<span class="fa fa-star checked"></span>
-												<span class="fa fa-star checked"></span>
-												<span class="fa fa-star"></span>
-												<span class="fa fa-star"></span>
-											</span>
+
+										
+						 				<c:forEach begin="1" end="${product.avgRating}" var="index">
+			     	              		 <i  class="fas fa-star text-warning"></i>
+			                          		</c:forEach>
+				                      	<c:forEach begin="1" end="${5-product.avgRating}" var="index">
+				                      		<i class="far fa-star text-warning"></i>
+				                      	</c:forEach>
+								
+
 										</div>
-										<a class="btn button-cart" 
-										href="/addCart/${product.id}" >Add to Cart</a>
+
+										<c:choose>
+											<c:when test="${product.countInStock > 0}">
+												<a class="btn button-cart" 
+												href="/addCart/${product.id}" >Add to Cart
+											   </a>
+											</c:when>
+											<c:otherwise>
+												<a style="pointer-events: none; opacity: 0.4; background-color:rgb(148, 145, 145)" class="btn button-cart" 
+												href="/addCart/${product.id}" >out of stock
+											   </a> 
+											</c:otherwise>
+										</c:choose>
+
+
 									</div>
 								</div>
 									 </a> 
 						     	</c:forEach>
-								 
-
-								<!-- <div class="container-cards mt-2">
-									<img src="/image/skin1.jpg" alt="">
-									<div class="content">
-										<div class="box">
-											<span class="class1">Brand Name</span>
-											<span class="class2">Men's Designer T-Shirt</span>
-											<span class="class3">$55.99</span>
-										</div>
-										<div class="box">
-											<span class="class1">Sizes</span>
-											<span class="class2">
-												<li>XS</li>
-												<li>S</li>
-												<li>M</li>
-												<li>XL</li>
-												<li>XXL</li>
-											</span>
-										</div>
-										<div class="box">
-											<span class="class1">Colors</span>
-											<span class="class2">
-												<li></li>
-												<li></li>
-												<li></li>
-												<li></li>
-												<li></li>
-											</span>
-										</div>
-										<a href="#">Add To Cart</a>
-									</div>
-								</div> -->
 
 							</section>
 							<div>
@@ -342,81 +327,6 @@
 										</div>
 									</div>
 								</footer>
-
-
-
-<!-- 
-						<div class="d-flex align-items-center justify-content-between">
-									<div class="mt-4">
-										<h1 style="color:#0d6efd">Welcome
-											<c:out value="${user.fName}" />
-										</h1>
-										<br>
-										
-									</div>
-					
-						</div>
-			<p>List Products</p>						
-	 <c:choose>
-    <c:when test="${products.size() == 0}">
-        <h3>no products to display !! </h3>
-        <br />
-    </c:when>    
-    <c:otherwise>
-	    <table class="table">
-					<thead>
-						<tr>
-							<th scope="col">Product Name</th>
-							<th scope="col">Price</th>
-							<th scope="col">Action</th>
-							<th scope="col">Availability</th>
-						</tr>
-					</thead>
-					<tbody>
-						<c:forEach items="${products}" var="product">
-							<tr>
-								<td><u><a style="color: #0d6efd"
-										href='<c:url value="/products/${product.id}/1"/>'> <c:out
-												value="${product.name}" />
-									</a></u></td>
-								<td><c:out value="${product.price}" /></td>
-								
-								<c:choose>
-								<c:when test="${product.countInStock == 0}">
-								<td><a class="btn btn-outline-primary disabled"
-									style="color: #0d6efd" href="/addCart/${product.id}">Add to
-										Cart</a></td>
-
-								<td><p style="color: red">out of stock</p></td>
-										
-
-										</c:when>
-										<c:when test="${product.countInStock <= 3}">
-										
-										 <td><a class="btn btn-outline-primary"
-									style="color: #0d6efd" href="/addCart/${product.id}">Add to
-										Cart</a></td>
-											<td><p style="color: orange">about to end</p></td>
-
-										</c:when>
-										<c:otherwise>
-										<td><a class="btn btn-outline-primary "
-									style="color: #0d6efd" href="/addCart/${product.id}">Add to
-										Cart</a></td>
-										
-											<td><p style="color: green">available</p></td>
-										</c:otherwise>
-									</c:choose>
-							</tr>
-						</c:forEach>
-					</tbody>
-				</table>
-								<br>
-								
-							</div>
-				</c:otherwise>
-</c:choose>			 -->
-							 
 
 							<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
 								integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"

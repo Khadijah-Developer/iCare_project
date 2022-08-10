@@ -297,7 +297,7 @@ public class CustomerController {
 	    return "redirect:/home";
 	}
 
-	@PostMapping("/addReview/{id}" )
+	@PostMapping("/{id}/addReview" )
 	public String addReview(@Valid @ModelAttribute("review") Review review,BindingResult result ,
 			HttpSession session , @PathVariable(value="id") Long product_id ,  HttpServletRequest request,
 			RedirectAttributes redirectAttributes) throws IOException {

@@ -249,7 +249,6 @@ public class CustomerController {
 			if(!model.containsAttribute("user")) {
 				  model.addAttribute("user", userService.findUser((Long) session.getAttribute("user_id")));
 			  }
-		}
 		order=orderService.createOrder((Long) session.getAttribute("user_id"),
 				(List<Product>) session.getAttribute("cart"),
 				(Double) session.getAttribute("discount"),order);

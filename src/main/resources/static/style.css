@@ -353,3 +353,11 @@ a:focus-visible{
 color:transparent;
  text-decoration: none;
 }
+
+.btn-search{
+  background-color: #b38aa8;
+    border: none;
+  border-radius:3px;
+  box-shadow: 1px 5px 20px -5px rgba(0,0,0,0.4);
+    color: #fff;
+}

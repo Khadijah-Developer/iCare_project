@@ -53,9 +53,9 @@
 													Categories
 												</a>
 												<ul class="dropdown-menu">
-													<li><a class="dropdown-item" href="#">Body Care</a></li>
-													<li><a class="dropdown-item" href="#">Hair Care</a></li>
-													<li><a class="dropdown-item" href="#">Lip Care</a></li>
+													<li><a class="dropdown-item" href="/filter" name="">Body Care</a></li>
+													<li><a class="dropdown-item" href="/filter" name="">Hair Care</a></li>
+													<li><a class="dropdown-item" href="/filter" name="Care">Care</a></li>
 													<li>
 														<hr class="dropdown-divider">
 													</li>

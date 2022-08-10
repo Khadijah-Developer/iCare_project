@@ -189,7 +189,7 @@
 							<section class="all-products d-flex justify-content-around container">
 						
 								<c:forEach items="${products}" var="product">
-								<a href='<c:url value="/products/${product.id}"/>'> 
+								<a href='<c:url value="/products/${product.id}/1"/>'> 
 								<div class="container-cards mt-2">
 									<img src="/image/skin1.jpg" alt="">
 									<div class="content">

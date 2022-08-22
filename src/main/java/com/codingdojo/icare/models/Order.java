@@ -11,11 +11,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -28,7 +31,7 @@ public class Order {
 	private Long id;
 	
 	private Double totalPrice= 0.0;
-	
+	@NotNull(message = "must not null")
 	private String paymentMethod;
 	
 	private Double shippingPrice = 0.0; 
@@ -47,9 +50,15 @@ public class Order {
     private User customer;
 	
 	//1:M order contains products 
-    @OneToMany(mappedBy="order" ,fetch=FetchType.LAZY , cascade = CascadeType.MERGE)
-    private List<Product> products; 
-    
+	
+	//products belong to order n:m
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "orders_products", 
+        joinColumns = @JoinColumn(name = "order_id"), 
+        inverseJoinColumns = @JoinColumn(name = "product_id")
+    ) 
+    private List<Product> products;
     
 	
     @Column(updatable=false)
@@ -100,13 +109,7 @@ public class Order {
 		this.customer = customer;
 	}
 
-	public List<Product> getProducts() {
-		return products;
-	}
 
-	public void setProducts(List<Product> products) {
-		this.products = products;
-	}
 
 	public Date getCreatedAt() {
 		return createdAt;
@@ -125,6 +128,14 @@ public class Order {
 	}
     
     
+	public List<Product> getProducts() {
+		return products;
+	}
+
+	public void setProducts(List<Product> products) {
+		this.products = products;
+	}
+
 	//other Method
 	@PrePersist
 	protected void onCreate(){

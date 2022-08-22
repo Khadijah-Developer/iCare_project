@@ -22,7 +22,8 @@ crossorigin="anonymous">
 <title>Checkout</title>
 </head>
 <body>
-		
+		<%-- include other jsp file to include the navbar --%>
+ <jsp:include page="navbar.jsp" /> 
 
 		<c:if test="${not empty error}">
 			<div class="alert alert-danger mt-4"><c:out value="${error}"/></div>
@@ -95,8 +96,8 @@ crossorigin="anonymous">
               
 
               <div class="d-flex justify-content-end pt-3">
-                <button type="submit" class="btn btn-success btn-lg ms-2"
-                  style="background-color:hsl(210, 100%, 50%) ">Add Address</button>
+                <button type="submit" class="btn text-light ms-2"
+                  style="background-color:hsl(295, 15%, 67%) ">Add Address</button>
               </div>
            </form:form>	
 

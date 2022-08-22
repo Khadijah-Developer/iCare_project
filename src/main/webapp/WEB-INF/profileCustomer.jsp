@@ -20,8 +20,9 @@ crossorigin="anonymous">
 <title>Profile</title>
 </head>
 <body>
- 	
-<div class="container w-75">
+ 	<%-- include other jsp file to include the navbar --%>
+ <jsp:include page="navbar.jsp" /> 
+<div class="container w-75 p-5 mt-4"  style="background-color: #f8f9fa;">
 		<c:if test="${not empty success}">
 			<div class="alert alert-success mt-4"><c:out value="${success}"/></div>
 		</c:if>
@@ -30,11 +31,10 @@ crossorigin="anonymous">
 		</c:if>
 
         <div m-2>
-            <h5>Welcome, <c:out value="${customer.fName}"/></h5>
-            <a href="/home"> Home</a>
-            <table class="table">
+            <h5> <span style="color:#8c708e">Welcome,</span> <c:out value="${customer.fName}"/></h5>
+            <table class="table mt-4">
 			<thead>
-				<tr>
+				<tr style="color:#8c708e">
 					<th scope="col">Full Name</th>
 					<th scope="col">Phone No.</th>
                     <th scope="col">Email</th>
@@ -50,10 +50,11 @@ crossorigin="anonymous">
 		</table>
 
         </div>
+		<br>
         <div>
                 <table class="table">
 			<thead>
-				<tr>
+				<tr style="color:#8c708e">
 					<th scope="col">Address</th>
 				</tr>
 			</thead>
@@ -66,19 +67,20 @@ crossorigin="anonymous">
                                     <c:out value="${address.city}"/>,
                                     <c:out value="${address.district}"/>,<c:out value="${address.street}"/>,
                                     <c:out value="${address.postalCode}"/>
+									<a style="background-color:hsl(295, 15%, 67%); border:none" class="btn btn-outline-dark text-white ml-4"  href="/user/address/${address.id}/edit">Edit</a>
                             </div>
                             </td>	
                             </tr>				
 						</c:forEach>
 			</tbody>
 		</table>
-
+	<br> <br>
         </div>
 		
-        			<p>List Orders</p>
+        			<h5 style="color:#8c708e" id="order">My Orders</h5>
 		<table class="table">
 			<thead>
-				<tr>
+				<tr style="color:#8c708e">
 					<th scope="col">Order Id</th>
 					<th scope="col">Total</th>
 					<th scope="col" >Order Status</th>
@@ -87,8 +89,8 @@ crossorigin="anonymous">
 			<tbody>
 				<c:forEach items="${orders}" var="order">
 					<tr>	
-						<td ><a style="color:#0d6efd"  href='<c:url value="/summary/${order.id}"/>' ><c:out value="${order.id}"/></a></td>
-						<td ><c:out value="${order.totalPrice}"/></td>
+						<td class="border-bottom" ><a    href='<c:url value="/summary/${order.id}"/>' ><c:out value="${order.id}"/></a></td>
+						<td ><fmt:formatNumber type="number" maxFractionDigits="2" value="${order.totalPrice}"/> SAR </td>
                         
 						<td >
                       <div class="d-flex justify-content-among m-2">
@@ -98,7 +100,7 @@ crossorigin="anonymous">
                         <c:if test="${!order.orderStatus.equals('shipped') && !order.orderStatus.equals('deliverd')}">
                                     <div>
                             		<form:form  action="/order/delete/${order.id}" method="delete" modelAttribute="order">
-						           <input style="margin-left:4px;" type="submit" id="submit" value="Cancel Order" class="btn btn-outline-dark">
+						           <input type="submit" id="submit" value="Cancel Order" style="background-color:hsl(295, 15%, 67%); border:none" class="btn btn-outline-dark text-white ml-4"  >
 					                </form:form>
                                     </div>
                          </c:if>

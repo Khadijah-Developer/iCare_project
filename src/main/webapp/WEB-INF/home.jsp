@@ -9,6 +9,8 @@
 				<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 					<!-- for rendering errors on PUT routes -->
 					<%@ page isErrorPage="true" %>
+					<%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
+					
 						<!DOCTYPE html>
 						<html>
 
@@ -16,10 +18,6 @@
 							<meta charset="UTF-8">
 							<!-- CSS only -->
 							<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-							<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css"
-								rel="stylesheet"
-								integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx"
-								crossorigin="anonymous">
 							<link rel="stylesheet"
 								href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 							<link rel="stylesheet" type="text/css" href="/style.css">
@@ -28,126 +26,33 @@
 							<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 							<script type="text/javascript" src="/counter.js"></script>
 							<title>Home</title>
-							
+							<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" 
+        integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" 
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-						</head>
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+	<style>
+		@media (max-width: 640px){
+       footer {
+       height: 40vh !important; 
+     
+          }
+        footer .social-media {
+       height: 40vh !important;
+       }
+		}
+	
+	</style>					
+	</head>
 
 						<body>
-							<section class="navbr">
-								<nav class="navbar navbar-expand-lg bg-light">
-									<div class="container-fluid">
-										<a class="navbar-brand" href="#""><img alt="" src="/image/logo.png" style="width:75px; height:75px;"></a>
-										<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-											data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-											aria-expanded="false" aria-label="Toggle navigation">
-											<span class="navbar-toggler-icon"></span>
-										</button>
-										<div class="collapse navbar-collapse" id="navbarSupportedContent">
-											<ul class="navbar-nav me-auto mb-2 mb-lg-0">
-												<li class="nav-item">
-													<a class="nav-link active" aria-current="page" href="#">Home</a>
-												</li>
-	
-												<li class="nav-item">
-													<a class="nav-link" href="#">Top Products</a>
-												</li>
-	
-												<li class="nav-item dropdown">
-													<a class="nav-link dropdown-toggle" href="#" role="button"
-														data-bs-toggle="dropdown" aria-expanded="false">
-														Categories
-													</a>
-													<ul class="dropdown-menu">
-														<li><a class="dropdown-item" href="/filter" name="">Body Care</a></li>
-														<li><a class="dropdown-item" href="/filter" name="">Hair Care</a></li>
-														<li><a class="dropdown-item" href="/filter" name="Care">Care</a></li>
-														<li>
-															<hr class="dropdown-divider">
-														</li>
-														<li><a class="dropdown-item" href="#">All Products</a></li>
-													</ul>
-												</li>
-												<li class="nav-item">
-													<a class="nav-link" href="#">Contact</a>
-												</li>
-	
-											</ul>
-											<form class="d-flex" role="search" action="/search" method="post">
-												<input class="form-control me-2" type="search" placeholder="Search"
-													aria-label="Search" name="searchKey">
-												<button class="btn btn-search" type="submit">Search</button>
-											</form>
-	
-											<ul class="navbar-nav  mb-2 mb-lg-0">
-												<c:if test="${!role.equals('admin')}">
-												<li class="nav-item">
-													<div id="ex4">
-														<a href="/cart">
-															<span class="p1 fa-stack fa-2x has-badge" data-count="${productCount}">
-																<!--<i class="p2 fa fa-circle fa-stack-2x"></i>-->
-		
-																<i class="p3 fa fa-shopping-cart fa-stack-1x xfa-inverse"
-																	data-count="4b"></i>
-															</span>
-														</a>
-													</div>
-												</li>
-												</c:if>
-												<li class="nav-item dropdown">
-													<a class="nav-link dropdown-toggle" href="#" role="button"
-														data-bs-toggle="dropdown" aria-expanded="false">
-														<i class="fa fa-user" style="font-size:36px"></i>
-													</a>
-													<ul class="dropdown-menu">
-														<li>
-															<c:if test="${sessionScope.user_id != null}">
-																<a class="dropdown-item" href="/profile">Profile
-																	<c:out value="${user.fName}" />
-																</a>
-															</c:if>
-														</li>
-	
-														<!-- <li><a class="dropdown-item" href="#">Profile</a></li> -->
-														<li><a class="dropdown-item" href="#">Orders</a></li>
-														<li class=" dropdown-item">
-															<c:choose>
-																<c:when test="${sessionScope.user_id != null}">
-																	<div class="mr-2 logout ">
-																		<a href="/logout" class="icon-logout">Logout </a>
-																		<a href="/logout"></a> <i class="fa fa-sign-out"
-																			style="font-size:25px"></i></a>
-																	</div>
-																</c:when>
-																<c:otherwise>
-																	<div class="mr-2 logout ">
-																		<a href="/" class="icon-logout">LogIn </a>
-																		<a href="/"></a><i class="fa fa-sign-out"
-																			style="font-size:25px"></i></a>
-																	</div>
-																</c:otherwise>
-															</c:choose>
-														</li>
-													</ul>
-												</li>
-	
-											</ul>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-										</div>
-									</div>
-								</nav>
-	
+<%-- include other jsp file to include the navbar --%>
+ <jsp:include page="navbar.jsp" /> 
 
-							</section>
 
-							<section class="carousel-card-ads">
+
+<div style=" background: rgb(247, 243, 243);">						
+<section class="carousel-card-ads">
 								<div class="carousel-card">
 									<div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="true">
 										<div class="carousel-indicators">
@@ -161,13 +66,13 @@
 										</div>
 										<div class="carousel-inner">
 											<div class="carousel-item active">
-												<img src="/image/carsole1.jpg" class="d-block w-100" alt="...">
+												<img src="/image/banner1.png" class="d-block w-100" alt="...">
 											</div>
 											<div class="carousel-item">
-												<img src="/image/carsole2.jpg" class="d-block w-100" alt="...">
+												<img src="/image/banner2.png" class="d-block w-100" alt="...">
 											</div>
 											<div class="carousel-item">
-												<img src="/image/carsole3.jpg" class="d-block w-100" alt="...">
+												<img src="/image/banner4.png" class="d-block w-100" alt="...">
 											</div>
 										</div>
 										<button class="carousel-control-prev" type="button"
@@ -184,124 +89,252 @@
 								</div>
 							</section>
 
-							<div class="one">
+<c:if test="${bestSeller != null}">
+	<div class="one mt-5" id="best">
+		<h1>Best Seller</h1> 
+	</div>
+	
+	<section class="all-products d-flex justify-content-around  container">
+
+		<c:forEach items="${bestSeller}" var="product">
+			<div class="row ">
+				<div class="col-sm-12 col-md-4" >
+					<a href='<c:url value="/products/${product.id}/1"/>'>
+						<div class="container-cards mt-2 bg-white">
+							<img style="object-fit:contain" src="${product.photosImagePath[0]}" alt="">
+							<div class="content">
+								<div class="box">
+									<!-- <span class="class1">Product Name</span>  -->
+									
+									<c:choose>
+									<c:when test="${product.countInStock == 0 }">
+										<span class="class1"><c:out value="${product.name}" /> </span> <span class="badge badge-danger">Out of stock</span>
+									</c:when>
+									<c:when test="${product.countInStock <= 3}">
+										<span class="class1"><c:out value="${product.name}" /> </span> <span class="badge badge-warning">little in stock</span>
+									</c:when>
+									
+									<c:otherwise>
+										<span class="class1"><h4><c:out value="${product.name}" /></h4></span>
+									</c:otherwise>
+									</c:choose>
+									 <span class="class3"><c:out value="${product.price}" /> SAR</span>
+		
+									
+								</div>
+							<div class="box">
+							<!-- 		<span class="class1">Rat</span> -->
+		
+		
+									<c:forEach begin="1" end="${product.avgRating}" var="index">
+								<i  class="fas fa-star text-warning"></i>
+							</c:forEach>
+							<c:set var="rouund" value="${fn:substringBefore(product.avgRating, '.')}"/>
+							<c:if test="${rouund != product.avgRating}"><i class='fa-solid fa-star-half-stroke text-warning'></i></c:if>
+							
+							<c:forEach begin="1" end="${5-product.avgRating}" var="index">
+								<i class="far fa-star text-warning"></i>
+							</c:forEach>
+		
+		
+								</div>
+								<br>
+								<div class="box">
+									<span class="class1"></span> <span class="class1"><c:out
+											value="${product.brand}" /> Brand</span>
+								</div>
+		
+									<br>
+								<c:choose>
+									<c:when test="${product.countInStock > 0}">
+										<a class="btn button-cart" href="/addCart/${product.id}">Add
+											to Cart </a>
+									</c:when>
+									<c:otherwise>
+										<a
+											style="pointer-events: none; opacity: 0.4; background-color: rgb(148, 145, 145)"
+											class="btn button-cart" href="/addCart/${product.id}">out
+											of stock </a>
+		
+									</c:otherwise>
+								</c:choose>
+		
+		
+							</div>
+						</div>
+					</a>
+				</div>
+
+			</div>
+
+		</c:forEach>
+
+	</section>
+</c:if>
+
+
+
+
+
+							<div class="one" id="all">
 								<h1>All Products</h1>
 							</div>
 							  
-							<section class="all-products d-flex justify-content-around container">
-						
-								<c:forEach items="${products}" var="product">
-								<a href='<c:url value="/products/${product.id}/1"/>'> 
-								<div class="container-cards mt-2">
-									<img src="${product.photosImagePath[0]}" alt="">
-									<div class="content">
-										<div class="box">
-											<span class="class1">Product Name</span>
-											<span class="class2"><c:out value="${product.name}" /></span>
-											<span class="class3"><c:out value="${product.price}"/></span>
-										</div>
-										<div class="box">
-											<span class="class1">Brand</span>
-											<span class="class2"><c:out value="${product.brand}" /></span>
-										</div>
-										<div class="box">
-											<span class="class1">Review</span>
+	
+	<section class="all-products  d-flex justify-content-around  container">
 
-										
-						 				<c:forEach begin="1" end="${product.avgRating}" var="index">
-			     	              		 <i  class="fas fa-star text-warning"></i>
-			                          		</c:forEach>
-				                      	<c:forEach begin="1" end="${5-product.avgRating}" var="index">
-				                      		<i class="far fa-star text-warning"></i>
-				                      	</c:forEach>
-								
-
-										</div>
-
-										<c:choose>
-											<c:when test="${product.countInStock > 0}">
-												<a class="btn button-cart" 
-												href="/addCart/${product.id}" >Add to Cart
-											   </a>
-											</c:when>
-											<c:otherwise>
-												<a style="pointer-events: none; opacity: 0.4; background-color:rgb(148, 145, 145)" class="btn button-cart" 
-												href="/addCart/${product.id}" >out of stock
-											   </a> 
-											</c:otherwise>
-										</c:choose>
-
-
-									</div>
+		<c:forEach items="${products.content}" var="product">
+			<div class="row">
+				<div class="col-sm-9 col-md-3">
+					<a href='<c:url value="/products/${product.id}/1"/>'>
+						<div class="container-cards mt-2 bg-white">
+							<img style="object-fit:contain" src="${product.photosImagePath[0]}" alt="">
+							<div class="content">
+								<div class="box">
+									<!-- <span class="class1">Product Name</span>  -->
+									
+									<c:choose>
+									<c:when test="${product.countInStock == 0 }">
+										<span class="class1"><c:out value="${product.name}" /> </span> <span class="badge badge-danger">Out of stock</span>
+									</c:when>
+									<c:when test="${product.countInStock <= 3}">
+										<span class="class1"><c:out value="${product.name}" /> </span> <span class="badge badge-warning">little in stock</span>
+									</c:when>
+									
+									<c:otherwise>
+										<span class="class1"><h4><c:out value="${product.name}" /></h4></span>
+									</c:otherwise>
+									</c:choose>
+									 <span class="class3"><c:out value="${product.price}" /> SAR</span>
+		
+									
 								</div>
-									 </a> 
-						     	</c:forEach>
-
-							</section>
-							<div>
-								<nav aria-label="Page navigation example">
-									<ul class="pagination">
-									  <li class="page-item">
-										<a class="page-link" href="#" aria-label="Previous">
-										  <span aria-hidden="true">&laquo;</span>
-										</a>
-									  </li>
-									  <li class="page-item"><a class="page-link" href="#">1</a></li>
-									  <li class="page-item"><a class="page-link" href="#">2</a></li>
-									  <li class="page-item"><a class="page-link" href="#">3</a></li>
-									  <li class="page-item">
-										<a class="page-link" href="#" aria-label="Next">
-										  <span aria-hidden="true">&raquo;</span>
-										</a>
-									  </li>
-									</ul>
-								  </nav>
+							<div class="box">
+							<!-- 		<span class="class1">Rat</span> -->
+		
+		
+									<c:forEach begin="1" end="${product.avgRating}" var="index">
+								<i  class="fas fa-star text-warning"></i>
+							</c:forEach>
+							<c:set var="rouund" value="${fn:substringBefore(product.avgRating, '.')}"/>
+							<c:if test="${rouund != product.avgRating}"><i class='fa-solid fa-star-half-stroke text-warning'></i></c:if>
+							
+							<c:forEach begin="1" end="${5-product.avgRating}" var="index">
+								<i class="far fa-star text-warning"></i>
+							</c:forEach>
+		
+		
+								</div>
+								<br>
+								<div class="box">
+									<span class="class1"></span> <span class="class1"><c:out
+											value="${product.brand}" /> Brand</span>
+								</div>
+		
+									<br>
+								<c:choose>
+									<c:when test="${product.countInStock > 0}">
+										<a class="btn button-cart" href="/addCart/${product.id}">Add
+											to Cart </a>
+									</c:when>
+									<c:otherwise>
+										<a
+											style="pointer-events: none; opacity: 0.4; background-color: rgb(148, 145, 145)"
+											class="btn button-cart" href="/addCart/${product.id}">out
+											of stock </a>
+		
+									</c:otherwise>
+								</c:choose>
+		
+		
 							</div>
+						</div>
+					</a>
+				</div>
+			</div>
 
-							<section class="statistics">
-								<div class="container">
-									<div class="row">
-									  <br/>
-									  <div class="col text-center">
-										<h2>iCare website</h2>
-										<p>we have a greate achivment to show</p>
-									  </div>
-								  
-									</div>
-									<div class="row text-center">
-									  <div class="col">
-										<div class="counter">
-											<i class="fa fa-bug fa-2x"></i>
-										  <h2 class="timer count-title count-number" data-to="100" data-speed="1500"></h2>
-										  <p class="count-text ">Our Customer</p>
-										</div>
-									  </div> 
-									  <div class="col">
-										<div class="counter">
-										  <i class="fa fa-coffee fa-2x"></i>
-										  <h2 class="timer count-title count-number" data-to="1700" data-speed="1500"></h2>
-										  <p class="count-text ">Happy Clients</p>
-										</div>
-									  </div>
-									  <div class="col">
-										<div class="counter">
-										  <i class="fa fa-lightbulb-o fa-2x"></i>
-										  <h2 class="timer count-title count-number" data-to="11900" data-speed="1500"></h2>
-										  <p class="count-text ">Project Complete</p>
-										</div>
-									  </div>
-									  <div class="col">
-										<div class="counter">
-										  <i class="fa fa-coffee fa-2x"></i>
-										  <h2 class="timer count-title count-number" data-to="157" data-speed="1500"></h2>
-										  <p class="count-text ">Coffee With Clients</p>
-										</div>
-									  </div>
-									</div>
-								  </div>
-							</section>
+		</c:forEach>
 
-				     			<footer>
+	</section>
+							<div class="d-flex justify-content-center">
+							<nav aria-label="Page navigation example" >
+								<ul class="pagination">
+								    <li class="page-item">
+								      <a style="color:#683e68" class="page-link" href="/home/1" aria-label="Previous">
+								        <span aria-hidden="true">&laquo;</span>
+								        <span class="sr-only">Previous</span>
+								      </a>
+								    </li>
+									<c:forEach begin="1" end="${totalPages}" var="index">
+										<li class="page-item"><a  style="color:#683e68" class="page-link" href="/home/${index}">${index}</a></li>
+							    	</c:forEach>
+								    
+								    <li class="page-item">
+								      <a  style="color:#683e68" class="page-link" href="/home/${totalPages}" aria-label="Next">
+								        <span aria-hidden="true">&raquo;</span>
+								        <span class="sr-only">Next</span>
+								      </a>
+								    </li>
+								  </ul>
+							</nav>
+							</div>
+</div>
+<%-- end the back ground color --%>
+							
+	<section class="statistics">
+		<div class="container">
+			<div class="row">
+				<br />
+				<div class="col text-center">
+					<h2>iCare Store</h2>
+					<p>we have a greate achivment to show</p>
+				</div>
+
+			</div>
+			<div class="row text-center">
+				<div class="col">
+					<div class="counter">
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-person-heart fa-2x" viewBox="0 0 16 16">
+  <path d="M9 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm-9 8c0 1 1 1 1 1h10s1 0 1-1-1-4-6-4-6 3-6 4Zm13.5-8.09c1.387-1.425 4.855 1.07 0 4.277-4.854-3.207-1.387-5.702 0-4.276Z"/>
+						<h2 class="timer count-title count-number" data-to="${customersNo}"
+							data-speed="1000"></h2>
+						<p class="count-text ">Our Customers</p>
+					</div>
+				</div>
+				<div class="col">
+					<div class="counter">
+						<i class="fa-brands fa-product-hunt fa-2x"></i>
+						<h2 class="timer count-title count-number" data-to="${productsNo}"
+							data-speed="1000"></h2>
+						<p class="count-text ">Our Products</p>
+					</div>
+				</div>
+				<div class="col">
+					<div class="counter">
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-people-fill fa-2x" viewBox="0 0 16 16">
+  <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+  <path fill-rule="evenodd" d="M5.216 14A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216z"/>
+  <path d="M4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/>
+</svg>						<h2 class="timer count-title count-number" data-to="20"
+							data-speed="1000"></h2>
+						<p class="count-text ">Our Partners</p>
+					</div>
+				</div>
+				<div class="col">
+					<div class="counter">
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-shop fa-2x" viewBox="0 0 16 16">
+  <path d="M2.97 1.35A1 1 0 0 1 3.73 1h8.54a1 1 0 0 1 .76.35l2.609 3.044A1.5 1.5 0 0 1 16 5.37v.255a2.375 2.375 0 0 1-4.25 1.458A2.371 2.371 0 0 1 9.875 8 2.37 2.37 0 0 1 8 7.083 2.37 2.37 0 0 1 6.125 8a2.37 2.37 0 0 1-1.875-.917A2.375 2.375 0 0 1 0 5.625V5.37a1.5 1.5 0 0 1 .361-.976l2.61-3.045zm1.78 4.275a1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0 1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0 1.375 1.375 0 1 0 2.75 0V5.37a.5.5 0 0 0-.12-.325L12.27 2H3.73L1.12 5.045A.5.5 0 0 0 1 5.37v.255a1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0zM1.5 8.5A.5.5 0 0 1 2 9v6h1v-5a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v5h6V9a.5.5 0 0 1 1 0v6h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1V9a.5.5 0 0 1 .5-.5zM4 15h3v-5H4v5zm5-5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-3zm3 0h-2v3h2v-3z"/>
+</svg>						<h2 class="timer count-title count-number" data-to="3"
+							data-speed="1000"></h2>
+						<p class="count-text ">Our Branches</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+
+				     			<footer id="contact">
 									<div class= "social-media">
 										<div class="down-footer">
 										
@@ -323,14 +356,12 @@
 											</li>
 											</ul>
 											<hr>
-											<a href="mailto:icare@hotmail.com" class="email">Corporate Headquarters 2105 S. Bascom Ave <i style="color:#eee" class="fa fa-envelope"></i> Copyright© 2022  icare@hotmail.com  <i style="color:#eee"  class="fa fa-phone"></i>  +1 650 385 2247</a>
+											<a href="mailto:icare@hotmail.com" class="email">Bashayer, Norah, Mariam, Shahad and Khadijah. <i style="color:#eee" class="fa fa-envelope"></i> Copyright© 2022  icare@hotmail.com  <i style="color:#eee"  class="fa fa-phone"></i>  +1 650 385 2247</a>
 										</div>
 									</div>
 								</footer>
 
-							<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
-								integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
-								crossorigin="anonymous"></script>
+					
 
 							
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>

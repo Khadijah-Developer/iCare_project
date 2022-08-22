@@ -1,5 +1,6 @@
 package com.codingdojo.icare.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.mindrot.jbcrypt.BCrypt;
@@ -63,6 +64,10 @@ public class UserService {
 
 		public void deleteUser (Long id) {
 			userRepo.deleteById(id);
+		}
+		
+		public List<User> getAllUsers(){
+			return userRepo.findAll();
 		}
 		
 

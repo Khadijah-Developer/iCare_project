@@ -20,8 +20,11 @@ crossorigin="anonymous">
 <title>Checkout</title>
 </head>
 <body>
+ 	<%-- include other jsp file to include the navbar --%>
+ <jsp:include page="navbar.jsp" /> 
 		<div class="container w-75">
-			<div class="container border m-2">
+		
+			<div class="container border m-2 p-3 bg-light">
 					<div class="d-flex justify-content-between m-3">
 									<h3>Order Details</h3>
 					
@@ -37,7 +40,7 @@ crossorigin="anonymous">
 						</div>
 						<div class="m-2">
                         <p> We value your opinion to help us improve our products & service </p>
-						<a href="#" class="btn btn-outline-dark">Rate them</a>
+						<a href="#rate" class="btn btn-outline-dark">Rate them</a>
 						
 						</div>
 					</div>
@@ -62,7 +65,7 @@ crossorigin="anonymous">
 					</c:if>
 			</div>
 
-			<div class="container border m-2">
+			<div  class="container border m-2 p-3 bg-light">
 				<div class="d-flex justify-content-among m-2">
 							<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-mailbox" viewBox="0 0 16 16">
 							<path d="M4 4a3 3 0 0 0-3 3v6h6V7a3 3 0 0 0-3-3zm0-1h8a4 4 0 0 1 4 4v6a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1V7a4 4 0 0 1 4-4zm2.646 1A3.99 3.99 0 0 1 8 7v6h7V7a3 3 0 0 0-3-3H6.646z"/>
@@ -70,7 +73,11 @@ crossorigin="anonymous">
 							</svg>	
 							<h6 style="margin-left:4px;"> SHIPPING ADDRESS</h6>
 				</div>
-				<p class="m-2">SOME ADDRESS country- city -</p>
+				<p class="m-2">
+				<c:out value="${order.address.country}"/>, <c:out value="${order.address.state}"/>,
+													<c:out value="${order.address.city}"/>,
+													<c:out value="${order.address.district}"/>,<c:out value="${order.address.street}"/>,
+													<c:out value="${order.address.postalCode}"/></p>
 
 				<div class="d-flex justify-content-among m-2">
 							<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-phone" viewBox="0 0 16 16">
@@ -79,10 +86,10 @@ crossorigin="anonymous">
 							</svg>			
 								<h6 style="margin-left:4px;">MOBILE NUMBER</h6>
 				</div>
-				<p class="m-2">055555555555 <c:out value="${user.phoneNo}"/></p>
+				<p class="m-2"><c:out value="${order.customer.phoneNo}"/></p>
 			</div>
 
-			<div class="container border m-2">
+			<div class="container border m-2 p-3 bg-light">
 					<div class="d-flex justify-content-among m-2">
 					<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-server" viewBox="0 0 16 16">
 					<path d="M1.333 2.667C1.333 1.194 4.318 0 8 0s6.667 1.194 6.667 2.667V4c0 1.473-2.985 2.667-6.667 2.667S1.333 5.473 1.333 4V2.667z"/>
@@ -92,13 +99,21 @@ crossorigin="anonymous">
 						<h6 style="margin-left:4px;">PAYMENT</h6>
 					</div>
 					<div class="d-flex justify-content-between">
-						<p class="m-2"> Cash on delivery<c:out value="${order.paymentMethod}"/></p>	 <p class="m-2">	<c:out value="${order.totalPrice}"/> </p>	
+						<p class="m-2"><c:out value="${order.paymentMethod}"/></p>	 <p class="m-2">Total Price: <fmt:formatNumber type="number" maxFractionDigits="2" value="${order.totalPrice}"/> SAR </p>	
 					</div>
 			</div>
 
-			<div class="container border m-2">
-				<div class="d-flex justify-content-between m-4">
-								<h6>Your Ordered items</h6>
+			<div  class="container border m-2 p-3 bg-light">
+			<h6 id="rate">Your Ordered items</h6>
+				<div class=" m-4" id="rate">
+						
+					<c:forEach items="${listProduct}" var="product">
+						<div class="d-flex justify-content-among">
+							<p class="mr-2"> <span class="class2"><c:out value="${product.name}" /></span> </p>
+							<p class="mr-2"> <span class="class3"><c:out value="${product.price}"/></span></p> <a href="/products/${product.id}/1#rating" class="btn btn-outline-dark">Rate them</a>
+							</div>
+					</c:forEach>
+								
 				</div>
 			</div>
 

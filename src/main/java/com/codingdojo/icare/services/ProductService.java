@@ -5,10 +5,14 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.codingdojo.icare.models.Product;
 import com.codingdojo.icare.repos.ProductRepo;
+import org.springframework.data.domain.Sort;
 
 @Service
 public class ProductService {
@@ -33,6 +37,11 @@ public class ProductService {
 	public Product addProduct(Product p) {
 		return productRepo.save(p);
 	}
+	
+	public List<Product> BestSerller(){
+		return productRepo.findTop3ByOrderByCountOrder();
+	}
+	
 	//    create new Product     \\
 	public Product createProduct(Product product) {
 		return  productRepo.save(product);
@@ -52,15 +61,14 @@ public class ProductService {
 	public void delete(Long id) {
 		this.productRepo.deleteById(id);
 	}
-	
-	public List<Product> searchByNameOrBrand(String searchKey){
-		return productRepo.findByNameContainingOrBrandContaining(searchKey, searchKey);
-	}
+//	public List<Product> searchByNameOrBrand(String searchKey){
+//		return productRepo.findByNameContainingOrBrandContaining(searchKey, searchKey);
+//	}
 
 	//    filter products by category  \\
-	public List<Product>  filterByCategory(String filterCategory){
-		return productRepo.findByCategory(filterCategory);
-	}
+//	public List<Product>  filterByCategory(String filterCategory){
+//		return productRepo.findByCategoryContaining(filterCategory);
+//	}
 	
 	public void reduceQuantity(Product product) {	
 		product.setCountInStock(product.getCountInStock()-1);	
@@ -76,15 +84,16 @@ public class ProductService {
 		if( cart == null) {
 			newCart = new ArrayList<Product>();
 			newCart.add(product);
-		    reduceQuantity(product);
+		    //reduceQuantity(product);
 		}
 		else {  
 			newCart = cart;
 			newCart.add(product);
-			reduceQuantity(product);
+			//reduceQuantity(product);
 		}
 		return newCart;
 	}
+	
 	public List<Product> removeProduct(Product product, List<Product> cart)  {
 		for (Product product2 : cart) {
 			if(product2.getId().equals(product.getId())){
@@ -92,7 +101,7 @@ public class ProductService {
 				break;
 			}
 		}
-		addToQuantity(product);
+		//addToQuantity(product);
 		return cart;
 	}
 	
@@ -101,10 +110,28 @@ public class ProductService {
 		for (int i=0 ; i<cart.size(); i++) {
 			if(!cart.get(i).getName().equals(product.getName())){
 					newCart.add(cart.get(i));
-					addToQuantity(cart.get(i));	
+					//addToQuantity(cart.get(i));	
 			}
 		}
 		return newCart;
 
 	}
+	
+	private static final int PAGE_SIZE = 3;
+    public Page<Product> productsPerPage(int pageNumber) {
+    	Pageable pageable = PageRequest.of(pageNumber, PAGE_SIZE, Sort.Direction.DESC, "createdAt");
+        Page<Product> products = productRepo.findAllProducts(pageable);
+        return productRepo.findAllProducts(pageable);
+    }
+    
+    public Page<Product> searchPerPage(int pageNumber,String filterCategory) {
+    	Pageable pageable = PageRequest.of(pageNumber, PAGE_SIZE, Sort.Direction.DESC, "createdAt");
+        Page<Product> products = productRepo.findByCategoryContaining(filterCategory,pageable);
+        return productRepo.findByCategoryContaining(filterCategory,pageable);
+    }
+   public Page<Product> searchPerPage2(int pageNumber,String searchKey) {
+    	Pageable pageable = PageRequest.of(pageNumber, PAGE_SIZE, Sort.Direction.DESC, "createdAt");
+        Page<Product> products = productRepo.findByNameContainingOrBrandContaining(searchKey,searchKey,pageable);
+        return productRepo.findByNameContainingOrBrandContaining(searchKey,searchKey,pageable);
+}
 }

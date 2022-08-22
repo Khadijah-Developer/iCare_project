@@ -1,253 +1,44 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@page isELIgnored="false" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+
+<!-- c:out ; c:forEach etc. --> 
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<!-- Formatting (dates) --> 
+<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<!-- form:form -->
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<!-- for rendering errors on PUT routes -->
+<%@ page isErrorPage="true" %>
+<%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
 
 <!DOCTYPE html>
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Show a product</title>
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
-        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-        <link rel="stylesheet/less" type="text/css" href="styles.less" />
-        <style type="text/css">
-        body {
-        background-color:#f7f2f7;
-        }
-        *{
-    margin: 0;
-    padding: 0;
-	}
-	.rate {
-	    float: left;
-	    height: 46px;
-	    padding: 0 10px;
-	}
-	.rate:not(:checked) > input {
-	    position:absolute;
-	    top:-9999px;
-	}
-	.rate:not(:checked) > label {
-	    float:right;
-	    width:1em;
-	    overflow:hidden;
-	    white-space:nowrap;
-	    cursor:pointer;
-	    font-size:30px;
-	    color:#ccc;
-	}
-	.rate:not(:checked) > label:before {
-	    content: '★ ';
-	}
-	.rate > input:checked ~ label {
-	    color: #ffc700;    
-	}
-	.rate:not(:checked) > label:hover,
-	.rate:not(:checked) > label:hover ~ label {
-	    color: #deb217;  
-	}
-	.rate > input:checked + label:hover,
-	.rate > input:checked + label:hover ~ label,
-	.rate > input:checked ~ label:hover,
-	.rate > input:checked ~ label:hover ~ label,
-	.rate > label:hover ~ input:checked ~ label {
-	    color: #c59b08;
-	 } 
-	 
-	.image-upload > input
-	{
-	  	display: none;
-	}
-	
-	.image-upload img
-	{
-	    width: 80px;
-	    cursor: pointer;
-	}
-	
-	.thumpnail2 {
-	  border: 1px solid #ddd;
-	  border-radius: 4px;
-	  padding: 9px;
-	  width: 150px;
-	}
-	
-	.thumpnail2:hover {
-	  box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
-	
-}
-	
-	.embed-responsive img{
-    object-fit: contain;
-}
-
-#content-wrapper{
-			display: flex;
-			flex-wrap: wrap;
-			justify-content: center;
-			align-items: center;
-		}
-
-		.column{
-			width: 500px;
-			padding: 10px;
-		}
-
-		#featured{
-			max-width: 400px;
-			max-height: 400px;
-			object-fit: contain;
-			cursor: pointer;
-			
-
-		}
-		
-		.container > .featured {
-			width: 600px;
-			height: 600px;
-			
-			
-		}
-
-		.thumbnail{
-			object-fit: cover;
-			max-width: 180px;
-			max-height: 100px;
-			cursor: pointer;
-			opacity: 0.5;
-			margin: 5px;
-			border: 1px solid black;
-
-		}
-
-		.thumbnail:hover{
-			opacity:1;
-		}
-
-		.active{
-			opacity: 1;
-		}
-
-		#slide-wrapper{
-			max-width: 500px;
-			display: flex;
-			min-height: 100px;
-			align-items: center;
-			justify-content: center;
-		}
-
-		#slider{
-
-			display: flex;
-			flex-wrap: nowrap;
-			overflow-x: hidden;
-
-		}
-
-		#slider{
-			
-			display: flex;
-			flex-wrap: nowrap;
-			overflow-x: auto;
-
-
-		}
-
-		#slider::-webkit-scrollbar {
-		    width: 8px;
-
-		}
-
-		#slider::-webkit-scrollbar-track {
-		    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-
-		}
-		 
-		#slider::-webkit-scrollbar-thumb {
-		  background-color: #dede2e;
-		  outline: 1px solid slategrey;
-		   border-radius: 100px;
-
-		}
-
-		#slider::-webkit-scrollbar-thumb:hover{
-		    background-color: #18b5ce;
-		}
-
-		
-
-		.arrow{
-			width: 30px;
-			height: 30px;
-			cursor: pointer;
-			transition: .3s;
-		}
-
-		.arrow:hover{
-			opacity: .5;
-			width: 35px;
-			height: 35px;
-		}
-
-
-.stars-container {
-  position: relative;
-  display: inline-block;
-  color: transparent;
-}
-
-.stars-container:before {
-  position: absolute;
-  top: 0;
-  left: 0;
-  content: '★★★★★';
-  color: lightgray;
-}
-
-.stars-container:after {
-  position: absolute;
-  top: 0;
-  left: 0;
-  content: '★★★★★';
-  color: gold;
-  overflow: hidden;
-}
-
-.stars-0:after { width: 0%; }
-.stars-10:after { width: 10%; }
-.stars-20:after { width: 20%; }
-.stars-30:after { width: 30%; }
-.stars-40:after { width: 40%; }
-.stars-50:after { width: 50%; }
-.stars-60:after { width: 60%; }
-.stars-70:after { width: 70%; }
-.stars-80:after { width: 80%; }
-.stars-90:after { width: 90%; }
-.stars-100:after { width: 100; }
-
-
-
-
-/* Modified from: https://github.com/mukulkant/Star-rating-using-pure-css */
-        </style>
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css" rel="stylesheet">
-       
-        <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-        </head>
+<meta charset="UTF-8">
+<!-- CSS only -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css"
+								rel="stylesheet"
+								integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx"
+								crossorigin="anonymous">
+							<link rel="stylesheet"
+								href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+							<link rel="stylesheet" type="text/css" href="/product.css">
+							<link rel="stylesheet" type="text/css" href="/style.css">
+							<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" 
+        integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" 
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+							
+<title>Home</title>
+</head>
 <body>
-	<div class="container ">
-		
-		<div class="d-flex align-items-center justify-content-between">
-			<div></div>
-			<c:choose>
-				<c:when test="${role.equals('admin')}"><a  href="/admin">Back to Dashboard</a></c:when>
-				<c:otherwise><a  href="/home">Back to Home</a></c:otherwise>
-			</c:choose>
-			
-		
 
-	</div>
+
+		<%-- include other jsp file to include the navbar --%>
+ <jsp:include page="navbar.jsp" /> 
+ 	
+<div class="container mt-3 p-4">
+		
 		
 	<div id="content-wrapper" class="bg-white rounded p-4">
 		<div class="column">
@@ -279,11 +70,22 @@
 			<p><b>Category:</b> <c:out value="${product.category}"/></p>
 			<h4><c:out value="${product.price}"/> SAR</h4>
 			<h6>Average Rating: <fmt:formatNumber type="number" maxFractionDigits="1" value="${product.avgRating}"/>/5</h6>
+			<c:forEach begin="1" end="${product.avgRating}" var="index">
+						<i  class="fas fa-star text-warning"></i>
+					</c:forEach>
+					<c:set var="rouund" value="${fn:substringBefore(product.avgRating, '.')}"/>
+					<c:if test="${rouund != product.avgRating}"><i class='fa-solid fa-star-half-stroke text-warning'></i></c:if>
+					
+					<c:forEach begin="1" end="${5-product.avgRating}" var="index">
+						<i class="far fa-star text-warning"></i>
+					</c:forEach>
 			<hr>
 			<p> <c:out value="${product.description}"/></p>
 			<hr>
-			<input value=1 type="number">
-			<a class="btn btn-dark" href="#">Add to Cart</a>
+			
+			<c:if test="${!role.equals('admin') && product.countInStock !=0 }" >
+				<a class="btn btn-dark" href="/addCart/${product.id}">Add to Cart</a>
+			</c:if>
 
 		</div>
 	</div>
@@ -293,7 +95,7 @@
 			<div class="d-flex justify-content-end">
 				<form action="/products/${product.id}/delete" method="post">
 					<input type="hidden" name="_method" value="delete">
-					<input type="submit" class="btn btn-dark" value="Delete">
+					<input type="submit" class="btn btn-dark mr-2" value="Delete">
 				</form>
 				<a href='/products/${product.id}/edit'  class="btn btn-dark">Edit</a>
 			</div>
@@ -305,7 +107,7 @@
 		<nav aria-label="Page navigation example" >
 			<ul class="pagination">
 			    <li class="page-item">
-			      <a style="color:#683e68" class="page-link" href="#" aria-label="Previous">
+			      <a style="color:#683e68" class="page-link" href="/products/${product.id}/1" aria-label="Previous">
 			        <span aria-hidden="true">&laquo;</span>
 			        <span class="sr-only">Previous</span>
 			      </a>
@@ -315,7 +117,7 @@
 		    	</c:forEach>
 			    
 			    <li class="page-item">
-			      <a  style="color:#683e68" class="page-link" href="#" aria-label="Next">
+			      <a  style="color:#683e68" class="page-link" href="/products/${product.id}/${totalPages}" aria-label="Next">
 			        <span aria-hidden="true">&raquo;</span>
 			        <span class="sr-only">Next</span>
 			      </a>
@@ -326,9 +128,16 @@
     	
 		<div class="container p-3">
 			<c:forEach items="${reviews.content}" var="review">
+			<div class="review-bottom">
 				<p><b><c:out value="${review.custReview.fName}"/></b></p>
 				<div  class="ml-2">
-					<p class="m-0">Rating: <c:out value="${review.getRating()}"/></p>
+					<p class="m-0">Rating: 
+					<c:forEach begin="1" end="${review.getRating()}" var="index">
+						<i  class="fas fa-star text-warning"></i>
+					</c:forEach>
+					<c:forEach begin="1" end="${5-review.getRating()}" var="index">
+						<i class="far fa-star text-warning"></i>
+					</c:forEach>
 					<p>Reviewed on<c:out value="${review.getCreatedAt()}"/></p>
 				    <p><c:out value="${review.getComment()}"/></p>
 			    </div>
@@ -337,7 +146,7 @@
 			    <c:if test="${not empty review.photos[0]}">
 				    <c:forEach items="${review.photosImagePath}" var="imgPath">
 				    	
-				    	<div class="thumpnail2 embed-responsive embed-responsive-16by9" >
+				    	<div style="width: 150px;" class="thumpnail2 embed-responsive embed-responsive-16by9" >
 						    <a target="_blank" href="${imgPath}">
 								<img class=" embed-responsive-item" src="${imgPath}" alt="" >
 							</a>
@@ -346,9 +155,10 @@
 				    </c:forEach> 
 				</c:if>
 			    </div>
-			    <hr>
+			    
+			    </div>
 			     </c:forEach>
-		</div> 
+		</div>
 		<div class="d-flex justify-content-center">
 		<nav aria-label="Page navigation example" >
 			<ul class="pagination">
@@ -361,7 +171,6 @@
 				<c:forEach begin="1" end="${totalPages}" var="index">
 					<li class="page-item"><a  style="color:#683e68" class="page-link" href="/products/${product.id}/${index}">${index}</a></li>
 		    	</c:forEach>
-			    
 			    <li class="page-item">
 			      <a  style="color:#683e68" class="page-link" href="#" aria-label="Next">
 			        <span aria-hidden="true">&raquo;</span>
@@ -373,7 +182,7 @@
     	</div>
 			    
 		  <c:if test="${role.equals('customer')}">
-		  <h3 class="ml-2">Add Review</h3>
+		  <h3 class="ml-2" id="rating">Add Review</h3>
 			<form:form action="/${product.getId()}/addReview" method="post" enctype="multipart/form-data"  modelAttribute="review">
 				<div class="rate">
 				    <input type="radio" id="star5" name="rate" value="5" />
@@ -447,7 +256,5 @@
 		    })
 
 	</script>
-
-	
 </body>
 </html>

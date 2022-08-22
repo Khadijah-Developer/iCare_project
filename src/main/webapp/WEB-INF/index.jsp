@@ -89,7 +89,7 @@
 					<div class="invalid-feedback small" id="password-error"></div>
 					</div>
 					<div class="form-group">
-					<form:input path="confirmPassword" id="confirm-pass" name="confirm-password" class="form-control" cssErrorClass="form-control is-invalid"/>
+					<form:input path="confirmPassword" type="password" id="confirm-pass" name="confirm-password" class="form-control" cssErrorClass="form-control is-invalid"/>
 					<i toggle="#confirm-pass" class="fa fa-eye toggle-password" id="toggle-confirm-pass"></i>
 					<form:label path="confirmPassword">Confirm Password</form:label>
 					<div class="invalid-feedback small" id="confirmPassword-error"></div>

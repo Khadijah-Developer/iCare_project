@@ -20,33 +20,22 @@ crossorigin="anonymous">
 <meta charset="UTF-8">
 <title>New Product </title>
 </head>
-<body>
-		<div class="container w-75">
+<body class=" bg-light">
+ 	<%-- include other jsp file to include the admin navbar --%>
+ <jsp:include page="adminNavbar.jsp" /> 
+		<div class="container w-75 ">
 
 		<c:if test="${not empty error}">
 			<div class="alert alert-danger mt-4"><c:out value="${error}"/></div>
 		</c:if>
 		
-		<div class="d-flex align-items-center justify-content-between">
-			<div class="mt-4">
-				<h1 style="color:#0d6efd">Welcome, <c:out value="${user.fName}"/></h1>
-				<br>
-				
-			</div>
-			<div class="d-flex flex-column align-items-end">
-				<a  class="btn btn-outline-primary" style="color:#0d6efd" href = "/logout">Logout</a>
-				<br>
-				
-			</div>
-			
-		</div>
 		<!-- the start of create form  -->
 		
 		        <div>
             <div class="d-flex align-items-center justify-content-between">
                     <h1 class="mb-2">Create a New Product</h1>
             </div>
-            <form:form class="border border-3 p-4 border-dark" method="post" enctype="multipart/form-data" modelAttribute="product" action="/product">
+            <form:form class="border border-3 p-4 bg-white border-dark" method="post" enctype="multipart/form-data" modelAttribute="product" action="/product">
             <div class="mb-3"> 
                 <form:label path="name" class="form-label">Product Name:</form:label>
                 <form:input  path="name" cssClass="form-control" cssErrorClass="form-control is-invalid"  />
@@ -60,7 +49,11 @@ crossorigin="anonymous">
             
             <div class="mb-3"> 
                 <form:label path="category" class="form-label">Category:</form:label>
-                <form:input  path="category" cssClass="form-control" cssErrorClass="form-control is-invalid"  />
+                <form:select cssClass="form-control" cssErrorClass="form-control is-invalid"  path="category" >
+                	<form:option value="Hair care">Hair care</form:option>
+                	<form:option value="Skin care">Skin care</form:option>
+                	<form:option value="Body care">Body care</form:option>
+                </form:select>
                 <form:errors path="category" cssClass="invalid-feedback"/>
             </div>
             
@@ -89,7 +82,7 @@ crossorigin="anonymous">
                 <form:errors path="ProductImg" cssClass="invalid-feedback"/>
             </div>
             <!--  added extra img upload fields when user click button add -->
-            <button type="button" id="rowAdder"  class="btn btn-dark" ><span class="fa fa-plus">+</span></button>
+            <button type="button" id="rowAdder"  class="btn btn-dark" ><span class="fa fa-plus"></span></button>
             <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 			<script type="text/javascript">
 		        $("#rowAdder").click(function () {
@@ -101,7 +94,8 @@ crossorigin="anonymous">
 		    </script>
                 
                 
-            <input type="submit" value="Submit" class="btn btn-outline-primary">
+            <input type="submit" value="Submit" class="btn btn-dark">
+            <a class="btn btn-dark"  href ="/admin">Cancel</a>
         </form:form>
         </div>
 		<!--  the end  of the form -->
@@ -109,8 +103,6 @@ crossorigin="anonymous">
 		
 		
 				<br>
-					<div class="d-flex flex-column align-items-start">
-				<a class="btn btn-outline-primary" style="color:#0d6efd" href = "/admin">Cancel</a>
 				<br>
 				
 			</div>

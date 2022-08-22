@@ -52,7 +52,11 @@ public class AdminController {
 	
 	@GetMapping("/admin")
 	public String adminHome(Model model, HttpSession session,@ModelAttribute("order")Order order, RedirectAttributes redirectAttributes) {
-		if( !session.getAttribute("role").equals("admin") && session.getAttribute("user_id").equals("null")) {
+		if(session.getAttribute("user_id")== null) {
+			redirectAttributes.addFlashAttribute("error", "Must be authorized first");
+			return "redirect:/";
+		}
+		if( !session.getAttribute("role").equals("admin")) {
 			redirectAttributes.addFlashAttribute("error", "Must be authorized first");
 			return "redirect:/";
 		}
@@ -144,7 +148,8 @@ public class AdminController {
 	    int totalPages = reviews.getTotalPages();
 	    model.addAttribute("totalPages", totalPages);
 	    model.addAttribute("reviews", reviews);
-		return "/view_product.jsp";
+		return "view_product.jsp";
+	    //return "cart2.jsp";
 		}
 	
 	@DeleteMapping("/products/{id}/delete")
@@ -178,6 +183,10 @@ public class AdminController {
 				redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.product",result);
 				return "redirect:/admin";
 	        } 
+			//#####################NEW
+			if (product.getProductImg() == null) {
+				product = productService.updateProduct(id,product);
+			}else {
 			// list to store full paths
 			List<String> pathImgs = new ArrayList<String>();
 
@@ -200,6 +209,7 @@ public class AdminController {
 			
 			// save the paths in db
 			product.setPhotos(pathImgs);
+			}
 			productService.addProduct(product);
 
 	    	redirectAttributes.addFlashAttribute("success", "product was updated successfully");

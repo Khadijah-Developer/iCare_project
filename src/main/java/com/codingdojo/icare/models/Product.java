@@ -14,6 +14,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
@@ -61,7 +63,7 @@ public class Product {
 	
 	private Integer countInStock = 0;
 	
-	
+	private Integer countOrder = 0;
 	   
     @Column(updatable=false)
     @DateTimeFormat(pattern="yyyy-MM-dd")
@@ -71,10 +73,14 @@ public class Product {
 	
 	 //  Relationships   \\
 	
-	//products belong to 1 order
-	@ManyToOne
-	@JoinColumn(name="order_id")
-    private Order order;
+	//products belong to order n:m
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "orders_products", 
+        joinColumns = @JoinColumn(name = "product_id"), 
+        inverseJoinColumns = @JoinColumn(name = "order_id")
+    )
+    private List<Order> orders;
 	
 	
 	//1:M product has reviews
@@ -113,6 +119,18 @@ public class Product {
 	public String getDescription() {
 		return description;
 	}
+
+
+	public List<Order> getOrders() {
+		return orders;
+	}
+
+
+
+	public void setOrders(List<Order> orders) {
+		this.orders = orders;
+	}
+
 
 
 	public MultipartFile[] getProductImg() {
@@ -155,14 +173,9 @@ public class Product {
 
 
 
-
-
 	public String getCategory() {
 		return category;
 	}
-
-
-
 
 
 	public void setCategory(String category) {
@@ -267,21 +280,15 @@ public class Product {
 
 
 
-
-
-	public Order getOrder() {
-		return order;
+	public Integer getCountOrder() {
+		return countOrder;
 	}
 
 
 
-
-
-	public void setOrder(Order order) {
-		this.order = order;
+	public void setCountOrder(Integer countOrder) {
+		this.countOrder = countOrder;
 	}
-
-
 
 
 

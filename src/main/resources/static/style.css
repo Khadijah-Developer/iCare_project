@@ -5,7 +5,7 @@
     font-family: 'Quicksand', sans-serif;
    }
 body {
-  background: rgb(247, 243, 243);;
+  background: rgb(247, 243, 243);
    overflow-x: hidden;
 }
 #ex4 .p1[data-count]:after{
@@ -101,6 +101,7 @@ body {
 .all-products img{
 	width:100%;
 	height:240px;
+	padding:13px;
 }
 .container-cards{
     top: 50%;   left: 50%;
@@ -281,7 +282,8 @@ footer {
     background-size: cover;
     text-align: center;
     background-attachment: fixed;
-    height: 80vh;   
+    height: 80vh; 
+    width:100%;  
 }
 
 footer .input-group {
@@ -361,4 +363,17 @@ color:transparent;
   border-radius:3px;
   box-shadow: 1px 5px 20px -5px rgba(0,0,0,0.4);
     color: #fff;
+}
+
+homeBack {
+    background-image: url(../image/bg2.jpg);
+    background-position:center;
+    background-size: cover;
+    text-align: center;
+    background-attachment: fixed;
+    height: 80vh;   
+}
+
+a{
+	text-decoration: none !important; 
 }

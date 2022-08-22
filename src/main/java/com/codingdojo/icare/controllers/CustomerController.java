@@ -5,7 +5,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -54,29 +58,77 @@ public class CustomerController {
 	@Autowired
 	private ReviewService reviewServ;
 	
-	@GetMapping("/home")
-	public String userHome(Model model , HttpSession session , HttpServletRequest request) {
-		
-		if (session.getAttribute("searchKey") == null) { // if searchKey null so thats mean the user didnt search so display all products !
-			model.addAttribute("products",productService.findAllProduct());
-			}else {
-				List<Product> searchResult = productService.searchByNameOrBrand((String)session.getAttribute("searchKey"));
-				model.addAttribute("products",searchResult);
-				request.getSession().removeAttribute("searchKey"); // remove searchKey from the session to display all products when user refresh the page ! 
-			}
-		
+	@GetMapping("/home/{pageNumber}")
+	public String userHome(Model model , HttpSession session , HttpServletRequest request, @PathVariable("pageNumber") int pageNumber) {
+		model.addAttribute("customersNo", userService.getAllUsers().size());
+		model.addAttribute("productsNo", productService.findAllProduct().size());
 		if (!(session.getAttribute("user_id") == null)) { // if the user in the session send user object to home page (to print the name there )
 			model.addAttribute("user",userService.findUser((Long) session.getAttribute("user_id")));
 	    }
-		
-		
 		if (!(session.getAttribute("cart") == null)) { // if  cart exist
 			List<Product> cart = (List<Product>) session.getAttribute("cart");
 			session.setAttribute("productCount" , cart.size());
 	    }else {
 	    	session.setAttribute("productCount" , 0);
 	    }
+		System.out.print(session.getAttribute("filterKey"));
+		if (session.getAttribute("searchKey") != null) { // if searchKey null so thats mean the user didnt search so display all products !
+
+			Page<Product> searchResult = productService.searchPerPage2((pageNumber - 1),(String)session.getAttribute("searchKey"));
+		    int totalPages = searchResult.getTotalPages();
+		    model.addAttribute("totalPages", totalPages);
+			model.addAttribute("products",searchResult);
+			request.getSession().removeAttribute("searchKey"); // remove searchKey from the session to display all products when user refresh the page ! 
+			model.addAttribute("searchKey","searchKey");
+			return "home.jsp";
+		}
+		if ((String)request.getSession().getAttribute("filterKey") != null) { // if searchKey null so thats mean the user didnt search so display all products !
+			Page<Product> filterResult = productService.searchPerPage((pageNumber - 1),(String) session.getAttribute("filterKey"));
+		    int totalPages = filterResult.getTotalPages();
+		    model.addAttribute("totalPages", totalPages);
+			model.addAttribute("products",filterResult);
+			request.getSession().removeAttribute("filterKey"); // remove searchKey from the session to display all products when user refresh the page !
+			model.addAttribute("filterKey","filterKey");
+			return "home.jsp";
+			}
+		
+		Page<Product> products = productService.productsPerPage(pageNumber - 1);
+			    // total number of pages that we have
+			    int totalPages = products.getTotalPages();
+			    model.addAttribute("totalPages", totalPages);
+			    model.addAttribute("products", products);
+//		model.addAttribute("products",productService.findAllProduct());
+		model.addAttribute("bestSeller",productService.BestSerller());
 		return "home.jsp";
+
+//		if (session.getAttribute("searchKey") == null) { // if searchKey null so thats mean the user didnt search so display all products !
+//			model.addAttribute("products",productService.findAllProduct());
+//			model.addAttribute("bestSeller",productService.BestSerller());
+//			
+//			}else {
+//				List<Product> searchResult = productService.searchByNameOrBrand((String)session.getAttribute("searchKey"));
+//				model.addAttribute("products",searchResult);
+//				request.getSession().removeAttribute("searchKey"); // remove searchKey from the session to display all products when user refresh the page ! 
+//			}
+//		
+//		if (!(session.getAttribute("user_id") == null)) { // if the user in the session send user object to home page (to print the name there )
+//			model.addAttribute("user",userService.findUser((Long) session.getAttribute("user_id")));
+//	    }
+//		
+//		Page<Product> products = productService.productsPerPage(pageNumber - 1);
+//
+//	    // total number of pages that we have
+//	    int totalPages = products.getTotalPages();
+//	    model.addAttribute("totalPages", totalPages);
+//	    model.addAttribute("products", products);
+//		
+//		if (!(session.getAttribute("cart") == null)) { // if  cart exist
+//			List<Product> cart = (List<Product>) session.getAttribute("cart");
+//			session.setAttribute("productCount" , cart.size());
+//	    }else {
+//	    	session.setAttribute("productCount" , 0);
+//	    }
+//		return "home.jsp";
 	}
 	
 	// add to cart from home
@@ -86,7 +138,7 @@ public class CustomerController {
 		
 		List<Product> cart= productService.addProduct(product,(List<Product>) session.getAttribute("cart"));
 		session.setAttribute("cart", cart);	
-	    return "redirect:/home";
+	    return "redirect:/home/1";
 	}
 	
 	// romove from cart at cart 
@@ -95,7 +147,7 @@ public class CustomerController {
 			HttpSession session, RedirectAttributes redirectAttributes) {
 		Product product = productService.findProduct(id);
 		List<Product> cart= productService.removeProduct(product,(List<Product>) session.getAttribute("cart"));
-
+		session.setAttribute("cart", cart);	
 		return "redirect:/cart";
 	}
 	
@@ -103,12 +155,23 @@ public class CustomerController {
 	@GetMapping("cart/addCart/{id}")
 	public String addAtCart(@PathVariable(value="id") Long id,Model model,HttpSession session, RedirectAttributes redirectAttributes) {
 		Product product = productService.findProduct(id);
-		if(product.getCountInStock()<=0) {
-			redirectAttributes.addFlashAttribute("error", "Stocks are not enough");
-			return "redirect:/cart";
+		HashMap<Product,Integer> cartMap = (HashMap<Product, Integer>) session.getAttribute("cartMap");
+		// cartMap contains each product and its quantity in the cart
+		// loop over cart items
+		for(Map.Entry<Product,Integer> entry : cartMap.entrySet()) {
+			Product cartProduct=entry.getKey();
+			if (product.getName().equals(cartProduct.getName())) {
+				
+				// check if db stock is equal or less than the added product quantity
+				if(product.getCountInStock()<= cartMap.get(cartProduct) ) {
+					redirectAttributes.addFlashAttribute("error", "Stocks are not enough");
+					return "redirect:/cart";
+				}
+				
+			}
 		}
 		List<Product> cart= productService.addProduct(product,(List<Product>) session.getAttribute("cart"));
-		//session.setAttribute("cart", cart);	
+		session.setAttribute("cart", cart);	
 		return "redirect:/cart";
 	}
 		
@@ -134,15 +197,21 @@ public class CustomerController {
 			session.setAttribute("cart", new ArrayList<Product>());
 		}else{
 		List<Product> cart = (List<Product>) session.getAttribute("cart");
+		session.setAttribute("cart", cart);	
 		HashMap<Product,Integer> cartMap = new HashMap<Product,Integer>();
 		for (Product product: cart) {
 			boolean flag =false;
+			
+			//loop over cartMap if cartMap not empty, 
+			// we check if product does exist and increase count 
 			for (Product p: cartMap.keySet()) {
 				if (p.getName().equals(product.getName())) {
 					flag=true;
+					// cartMap.put(product,count"value")
 					cartMap.put(p,cartMap.get(p)+1);
 				}
 			}
+			// if product doesn't exist in cartMap
 			if(flag == false) {
 				cartMap.put(product,1);
 			}
@@ -151,8 +220,10 @@ public class CustomerController {
 		for(Product product :cart) {
 			totalPrice+=product.getPrice();
 		}
-		model.addAttribute("cartMap",cartMap);
+		session.setAttribute("productCount" , cart.size());
+		session.setAttribute("cartMap",cartMap);
 		session.setAttribute("totalPrice", totalPrice);
+		
 		}
 		return "cart.jsp";
 	}
@@ -163,7 +234,7 @@ public class CustomerController {
 	public String checkout(Model model,HttpSession session, RedirectAttributes redirectAttributes){
 		  if(session.getAttribute("user_id") == null) {
 			  redirectAttributes.addFlashAttribute("error", "you need to login/register first");
-			  return "redirect:/";
+			  return "redirect:/sign";
 		  }
 		  if(!model.containsAttribute("order")) {
 			  model.addAttribute("order", new Order());
@@ -172,6 +243,7 @@ public class CustomerController {
 		  if(!model.containsAttribute("user")) {
 			  model.addAttribute("user", userService.findUser((Long) session.getAttribute("user_id")));
 		  }
+		  
 		  return "checkout.jsp";
 	}
 	
@@ -206,14 +278,30 @@ public class CustomerController {
 		return "redirect:/cart/checkout";
 	}
 	
+	//     render edit address  \\
+	@GetMapping("/user/address/{id}/edit")
+	public String addressEditPage( @PathVariable("id") Long id, Model model) {
+		Address address2 = addressService.findAddress(id);
+		model.addAttribute("address", address2);
+		return "editAddress.jsp";
+	}
 	
-	 
-    @PostMapping("/search" )
+	@PutMapping("/user/address/{id}/edit")
+	public String addressEdit(@Valid @ModelAttribute("address") Address address,
+			BindingResult result, 
+			RedirectAttributes redirectAttributes,
+			@PathVariable("id") Long id, Model model) {
+		Address address2 = addressService.updateAddress(address, id);
+		
+		return "redirect:/profile";
+	}
+	
+	
+	@PostMapping("/search" )
 	public String search( Model model , HttpServletRequest request ,HttpSession session) {
 		String searchKey = request.getParameter("searchKey");
 		session.setAttribute("searchKey", searchKey);
-		
-	    return "redirect:/home";
+	    return "redirect:/home/1";
 	    }
 	
         
@@ -228,16 +316,19 @@ public class CustomerController {
 	}
 	//   Display the summary of order placed by customer  \\
 	@GetMapping("/summary/{id}")
-	public String summary(Model model,@PathVariable("id") Long id ) {
-
+	public String summary(Model model,@PathVariable("id") Long id , HttpSession session) {
+		
 		Order order= orderService.findOrder(id);
+		System.out.println(order.getId());
+		model.addAttribute("listProduct", order.getProducts());
+		System.out.println(order.getProducts().size());
 		model.addAttribute("order",order);
 		return "summary.jsp";
 	}
 	
 	@PostMapping("/order")
 	public String placeOrder(@Valid @ModelAttribute("order") Order order,BindingResult result ,
-	HttpSession session,RedirectAttributes redirectAttributes , Model model) {
+	HttpSession session,RedirectAttributes redirectAttributes , Model model , HttpServletRequest request) {
 		if(result.hasErrors()) {
 			redirectAttributes.addFlashAttribute("order", order);
 			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.order", result);
@@ -250,11 +341,18 @@ public class CustomerController {
 				  model.addAttribute("user", userService.findUser((Long) session.getAttribute("user_id")));
 			  }
 		order=orderService.createOrder((Long) session.getAttribute("user_id"),
-				(List<Product>) session.getAttribute("cart"),
+				(HashMap<Product,Integer>) session.getAttribute("cartMap"),
 				(Double) session.getAttribute("discount"),order);
 		model.addAttribute(order);
-		session.setAttribute("cart",new ArrayList<Product>());
+//		List orderProducts = (List<Product>) session.getAttribute("cart");
+		
+//		session.setAttribute("cart",new ArrayList<Product>());
+		request.getSession().removeAttribute("cartMap"); // remove cart from the session 
+		request.getSession().removeAttribute("cart"); // remove cart from the session 
+		session.setAttribute("productCount" , 0);
 		session.setAttribute("totalPrice", 0.0);
+		session.setAttribute("discount",0.0);
+
 		return "redirect:/summary/"+order.getId();
 	}
 	
@@ -285,16 +383,12 @@ public class CustomerController {
 		return "redirect:/profile";
 	}
 
-
-	//     filter products via  category   \\
-	@GetMapping("/filter" )
-	public String filterCategory( Model model , HttpServletRequest request) {
-		String filterKey = request.getParameter("filterKey");
-		List<Product> filterResult = productService.filterByCategory(filterKey);
-		
-		model.addAttribute("filter",filterResult); 
-		model.addAttribute("filterKey", filterKey);
-	    return "redirect:/home";
+	    // filter products via  category   \\
+	@GetMapping("/filter/{filterKey}" )
+	public String filterCategory( Model model , HttpServletRequest request,ServletRequest session,@PathVariable("filterKey") String filterKey) {
+//		session.setAttribute("filterKey",filterKey);
+		request.getSession().setAttribute("filterKey", filterKey);
+		return "redirect:/home/1";
 	}
 
 	@PostMapping("/{id}/addReview" )
@@ -316,6 +410,7 @@ public class CustomerController {
 		review.setProduct(product);
 		review = reviewServ.addReview(review);
 		
+		if (review.getImgs() != null) {
 		// list to store full paths
 		List<String> pathImgs = new ArrayList<String>();
 		System.out.println(review.getImgs()+" here");
@@ -337,6 +432,7 @@ public class CustomerController {
 				
 		// save the paths in db
 		review.setPhotos(pathImgs);
+		}
 		reviewServ.addReview(review);
 		
 		product.setAvgRating(getRatAvg(product)); 

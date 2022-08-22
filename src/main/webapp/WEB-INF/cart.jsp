@@ -28,108 +28,10 @@
 <body>
 
 
-							<nav class="navbar navbar-expand-lg bg-light">
-								<div class="container-fluid">
-									<a class="navbar-brand" href="#">LOGO</a>
-									<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-										data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-										aria-expanded="false" aria-label="Toggle navigation">
-										<span class="navbar-toggler-icon"></span>
-									</button>
-									<div class="collapse navbar-collapse" id="navbarSupportedContent">
-										<ul class="navbar-nav me-auto mb-2 mb-lg-0">
-											<li class="nav-item">
-												<a class="nav-link active" aria-current="page" href="/home">Home</a>
-											</li>
-
-											<li class="nav-item">
-												<a class="nav-link" href="#">Top Products</a>
-											</li>
-
-											<li class="nav-item dropdown">
-												<a class="nav-link dropdown-toggle" href="#" role="button"
-													data-bs-toggle="dropdown" aria-expanded="false">
-													Categories
-												</a>
-												<ul class="dropdown-menu">
-													<li><a class="dropdown-item" href="#">Body Care</a></li>
-													<li><a class="dropdown-item" href="#">Hair Care</a></li>
-													<li><a class="dropdown-item" href="#">Lip Care</a></li>
-													<li>
-														<hr class="dropdown-divider">
-													</li>
-													<li><a class="dropdown-item" href="#">All Products</a></li>
-												</ul>
-											</li>
-											<li class="nav-item">
-												<a class="nav-link" href="#">Contact</a>
-											</li>
-
-										</ul>
-										<form class="d-flex" role="search" action="/search" method="post">
-											<input class="form-control me-2" type="search" placeholder="Search"
-												aria-label="Search" name="searchKey">
-											<button class="btn btn-outline-success" type="submit">Search</button>
-										</form>
-
-										<ul class="navbar-nav  mb-2 mb-lg-0">
-											<li class="nav-item">
-												<div id="ex4">
-													<a href="/cart">
-														<span class="p1 fa-stack fa-2x has-badge" data-count="${productCount}">
-															<!--<i class="p2 fa fa-circle fa-stack-2x"></i>-->
-	
-															<i class="p3 fa fa-shopping-cart fa-stack-1x xfa-inverse"
-																data-count="4b"></i>
-														</span>
-													</a>
-												</div>
-											</li>
-											<li class="nav-item dropdown">
-												<a class="nav-link dropdown-toggle" href="#" role="button"
-													data-bs-toggle="dropdown" aria-expanded="false">
-													<i class="fa fa-user" style="font-size:36px"></i>
-												</a>
-												<ul class="dropdown-menu">
-													<li>
-														<c:if test="${sessionScope.user_id != null}">
-															<a class="dropdown-item" href="/profile">Profile
-																<c:out value="${user.fName}" />
-															</a>
-														</c:if>
-													</li>
-
-													<!-- <li><a class="dropdown-item" href="#">Profile</a></li> -->
-													<li><a class="dropdown-item" href="#">Orders</a></li>
-													<li class=" dropdown-item">
-														<c:choose>
-															<c:when test="${sessionScope.user_id != null}">
-																<div class="mr-2 logout ">
-																	<a href="/logout" class="icon-logout">Logout </a>
-																	<a href="/logout"></a> <i class="fa fa-sign-out"
-																		style="font-size:25px"></i></a>
-																</div>
-															</c:when>
-															<c:otherwise>
-																<div class="mr-2 logout ">
-																	<a href="/" class="icon-logout">LogIn </a>
-																	<a href="/"></a><i class="fa fa-sign-out"
-																		style="font-size:25px"></i></a>
-																</div>
-															</c:otherwise>
-														</c:choose>
-													</li>
-												</ul>
-											</li>
-
-										</ul>
-
-
-									</div>
-								</div>
-							</nav>
+		<%-- include other jsp file to include the navbar --%>
+ <jsp:include page="navbar.jsp" /> 
  	
-<div class="container w-75">
+<div class="container w-75 bg-light mt-3 p-4">
 		<c:if test="${not empty success}">
 			<div class="alert alert-success mt-4"><c:out value="${success}"/></div>
 		</c:if>
@@ -141,10 +43,10 @@
 			
 			
 		</div>
-		<p>Cart</p>
+		<p>Your Purchases</p>
 		
 	<c:choose>
-    <c:when test="${cart == null}">
+    <c:when test="${cart.size() == 0}">
         <h3>Empty Cart </h3>
         <br />
     </c:when>    
@@ -161,18 +63,18 @@
 			<tbody>
 				<c:forEach items="${cartMap}" var="product">
 					<tr>	
-						<td ><u><a style="color:#0d6efd"  href='<c:url value="/products/${product.key.id}"/>' ><c:out value="${product.key.name}"/></a></u></td>
-						<td ><c:out value="${product.key.price*product.value}"/></td>
+						<td ><u class="font-weight-bold"><a style="color:hsl(296, 13%, 48%);"  href='<c:url value="/products/${product.key.id}/1"/>' ><c:out value="${product.key.name}"/></a></u></td>
+						<td ><fmt:formatNumber type="number" maxFractionDigits="2" value="${product.key.price*product.value}"/> SAR</td>
 						
 						<td>
-							<div>
-								<a class="btn btn-outline-primary" style="color:#0d6efd" href = "/removeCart/${product.key.id}">-</a>
+							<div style=" font-size:20px">
+								<a class="mr-3" style="color:hsl(294, 12%, 51%);" href = "/removeCart/${product.key.id}">-</a>
 								<c:out value="${product.value}"/>
-								<a class="btn btn-outline-primary" style="color:#0d6efd" href = "/cart/addCart/${product.key.id}">+</a>
+								<a class="ml-3" style="color:hsl(294, 12%, 51%);" href = "/cart/addCart/${product.key.id}">+</a>
 							</div>
 						</td>
-						<td><a class="btn btn-outline-primary" style="color:#0d6efd" href = "/removeCart/${product.key.id}/all">
-						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+						<td><a class="btn-white" style="color:hsl(294, 12%, 51%);" href = "/removeCart/${product.key.id}/all">
+						<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
 							<path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
 						  	<path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
 						</svg>
@@ -181,8 +83,10 @@
 				</c:forEach>
 			</tbody>
 		</table>
-		<p>total Price : <c:out value="${totalPrice}"/></p>
-				<a class="btn btn-outline-primary" style="color:#0d6efd" href = "/cart/checkout">Checkout</a>
+		<p>total Price : <fmt:formatNumber type="number" maxFractionDigits="2" value="${totalPrice}"/> SAR</p>
+		<c:if test="${totalPrice > 0 }">
+				<a style="background-color:hsl(295, 15%, 67%); border:none" class="btn btn-outline-dark text-white" style="color:#0d6efd" href = "/cart/checkout">Checkout</a>
+		</c:if>
 		<br>
 				
 	</div>

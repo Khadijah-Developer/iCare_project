@@ -6,10 +6,10 @@ body {
     background-repeat: no-repeat;
     background-size: cover;
   }
-.overlay {
+/*.overlay {
     background-color: rgba(0, 0, 0, 0.1);
     height: 100vh;
-}
+}*/
   
   .box {
     position: absolute;

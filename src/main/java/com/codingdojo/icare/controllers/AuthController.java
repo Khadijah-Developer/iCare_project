@@ -30,8 +30,13 @@ public class AuthController {
 	
 	 @Autowired
 	 private  UserService userService;
-	 
 		@GetMapping("/")
+		public String home(Model model) {
+			return "redirect:/home/1";
+			
+		}
+	 
+		@GetMapping("/sign")
 		public String ShowRegisterLogin(Model model) {
 			if(!model.containsAttribute("newUser")) {
 				model.addAttribute("newUser",new User());
@@ -60,7 +65,7 @@ public class AuthController {
 			else {
 				session.setAttribute("user_id", user.getId());
 				session.setAttribute("role", user.getRole());
-				String pathString = "/home";
+				String pathString = "/home/1";
 				GenericResponse response = new GenericResponse();
 				response.setSuccess(true);
 				response.setData(pathString);
@@ -137,7 +142,7 @@ public class AuthController {
 				session.setAttribute("user_id", userLogged.getId());
      			session.setAttribute("role", userLogged.getRole());
      			
-				String pathString = "/home";
+				String pathString = "/home/1";
 				if(userLogged.getRole().equals("admin")){
 					pathString = "/admin";
 				}
@@ -153,7 +158,7 @@ public class AuthController {
 		@GetMapping("/logout")
 		public String logout(HttpSession session) {
 			session.invalidate();
-			return "redirect:/";
+			return "redirect:/home/1";
 		}
 
 }
